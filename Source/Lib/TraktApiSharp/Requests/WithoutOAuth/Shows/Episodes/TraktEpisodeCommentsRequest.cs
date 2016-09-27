@@ -2,21 +2,20 @@
 {
     using Enums;
     using Objects.Basic;
-    using Objects.Get.Shows.Episodes;
     using System.Collections.Generic;
 
-    internal class TraktEpisodeCommentsRequest : TraktGetByIdEpisodeRequest<TraktPaginationListResult<TraktEpisodeComment>, TraktEpisodeComment>
+    internal class TraktEpisodeCommentsRequest : TraktGetByIdEpisodeRequest<TraktPaginationListResult<TraktComment>, TraktComment>
     {
         internal TraktEpisodeCommentsRequest(TraktClient client) : base(client) { }
 
-        internal TraktCommentSortOrder? Sorting { get; set; }
+        internal TraktCommentSortOrder Sorting { get; set; }
 
         protected override IDictionary<string, object> GetUriPathParameters()
         {
             var uriParams = base.GetUriPathParameters();
 
-            if (Sorting.HasValue && Sorting.Value != TraktCommentSortOrder.Unspecified)
-                uriParams.Add("sorting", Sorting.Value.AsString());
+            if (Sorting != null && Sorting != TraktCommentSortOrder.Unspecified)
+                uriParams.Add("sorting", Sorting.UriName);
 
             return uriParams;
         }

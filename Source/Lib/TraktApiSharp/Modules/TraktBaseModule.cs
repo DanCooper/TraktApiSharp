@@ -10,7 +10,8 @@
             Client = client;
         }
 
-        public TraktClient Client { get; set; }
+        /// <summary>Gets a reference to the associated <see cref="TraktClient" /> instance.</summary>
+        public TraktClient Client { get; }
 
         internal async Task<T> QueryAsync<T, U>(ITraktRequest<T, U> request)
         {

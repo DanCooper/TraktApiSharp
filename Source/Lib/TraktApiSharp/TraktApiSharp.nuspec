@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>TraktApiSharp</id>
+        <version>0.4.0</version>
+        <title>TraktApiSharp</title>
+        <authors>Henrik Fröhling</authors>
+        <owners>henrikfroehling</owners>
+        <licenseUrl>https://raw.githubusercontent.com/henrikfroehling/TraktApiSharp/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/henrikfroehling/TraktApiSharp</projectUrl>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <description>C# wrapper library for the Trakt.tv API.
+
+Features
+- Full Trakt.tv API Coverage
+- OAuth Authentication Support
+- Device Authentication Support
+- Completely asynchronous
+        </description>
+        <summary>C# wrapper library for the Trakt.tv API.</summary>
+        <releaseNotes>Added:
+- Support for new search fields
+        </releaseNotes>
+        <copyright>Henrik Fröhling © 2016</copyright>
+        <language>en-US</language>
+        <tags>trakt REST</tags>
+        <dependencies>
+            <dependency id="Newtonsoft.Json" version="9.0.1" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="..\..\..\Build\Lib\$buildConfig$\TraktApiSharp.dll" target="lib\portable-net45+netcore45+wpa81\TraktApiSharp.dll" />
+        <file src="..\..\..\Build\Lib\$buildConfig$\TraktApiSharp.pdb" target="lib\portable-net45+netcore45+wpa81\TraktApiSharp.pdb" />
+        <file src="..\..\..\Build\Lib\$buildConfig$\TraktApiSharp.XML" target="lib\portable-net45+netcore45+wpa81\TraktApiSharp.XML" />
+    </files>
+</package>

@@ -1,27 +1,14 @@
 ﻿namespace TraktApiSharp.Objects.Basic
 {
+    using Attributes;
     using Newtonsoft.Json;
-    using System;
 
-    /// <summary>
-    /// An image for an item available on only one size.
-    /// </summary>
+    /// <summary>An image for an item available in only one size.</summary>
     public class TraktImage
     {
-        /// <summary>
-        /// The address to the full size image.
-        /// </summary>
+        /// <summary>The address to the full size image.<para>Nullable</para></summary>
         [JsonProperty(PropertyName = "full")]
+        [Nullable]
         public string Full { get; set; }
-
-        /// <summary>
-        /// The URI to the full size image.
-        /// </summary>
-        [JsonIgnore]
-        public Uri FullUri
-        {
-            get { return !string.IsNullOrEmpty(Full) ? new Uri(Full) : null; }
-            set { Full = value.AbsoluteUri; }
-        }
     }
 }

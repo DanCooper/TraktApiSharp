@@ -1,73 +1,142 @@
 ﻿namespace TraktApiSharp.Modules
 {
-    using Objects.Basic;
+    using Attributes;
+    using Extensions;
     using Objects.Get.People;
     using Objects.Get.People.Credits;
-    using Requests;
+    using Requests.Params;
     using Requests.WithoutOAuth.People;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// Provides access to data retrieving methods specific to people.
+    /// <para>
+    /// This module contains all methods of the <a href ="http://docs.trakt.apiary.io/#reference/people">"Trakt API Doc - People"</a> section.
+    /// </para>
+    /// </summary>
     public class TraktPeopleModule : TraktBaseModule
     {
-        public TraktPeopleModule(TraktClient client) : base(client) { }
+        internal TraktPeopleModule(TraktClient client) : base(client) { }
 
-        public async Task<TraktPerson> GetPersonAsync(string id, TraktExtendedOption extended = null)
+        /// <summary>
+        /// Gets a <see cref="TraktPerson" /> with the given Trakt-Id or -Slug.
+        /// <para>OAuth authorization not required.</para>
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/people/summary/get-a-single-person">"Trakt API Doc - People: Summary"</a> for more information.
+        /// </para>
+        /// <para>See also <seealso cref="GetMultiplePersonsAsync(TraktMultipleObjectsQueryParams)" />.</para>
+        /// </summary>
+        /// <param name="personIdOrSlug">The person's Trakt-Id or -Slug. See also <seealso cref="TraktPersonIds" />.</param>
+        /// <param name="extendedOption">
+        /// The extended option, which determines how much data about the person should be queried.
+        /// See also <seealso cref="TraktExtendedOption" />.
+        /// </param>
+        /// <returns>An <see cref="TraktPerson" /> instance with the queried person's data.</returns>
+        /// <exception cref="Exceptions.TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">Thrown, if the given personIdOrSlug is null, empty or contains spaces.</exception>
+        [OAuthAuthorizationRequired(false)]
+        public async Task<TraktPerson> GetPersonAsync([NotNull] string personIdOrSlug, TraktExtendedOption extendedOption = null)
         {
-            Validate(id);
+            Validate(personIdOrSlug);
 
             return await QueryAsync(new TraktPersonSummaryRequest(Client)
             {
-                Id = id,
-                ExtendedOption = extended ?? new TraktExtendedOption()
+                Id = personIdOrSlug,
+                ExtendedOption = extendedOption
             });
         }
 
-        public async Task<TraktListResult<TraktPerson>> GetPersonsAsync(string[] ids, TraktExtendedOption extended = null)
+        /// <summary>
+        /// Gets multiple different <see cref="TraktPerson" />s at once with the given Trakt-Ids or -Slugs.
+        /// <para>OAuth authorization not required.</para>
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/people/summary/get-a-single-person">"Trakt API Doc - People: Summary"</a> for more information.
+        /// </para>
+        /// <para>See also <seealso cref="GetPersonAsync(string, TraktExtendedOption)" />.</para>
+        /// </summary>
+        /// <param name="personsQueryParams">A list of person ids and optional extended options. See also <seealso cref="TraktMultipleObjectsQueryParams" />.</param>
+        /// <returns>A list of <see cref="TraktPerson" /> instances with the data of each queried person.</returns>
+        /// <exception cref="Exceptions.TraktException">Thrown, if one request fails.</exception>
+        /// <exception cref="ArgumentException">Thrown, if one of the given person ids is null, empty or contains spaces.</exception>
+        [OAuthAuthorizationRequired(false)]
+        public async Task<IEnumerable<TraktPerson>> GetMultiplePersonsAsync(TraktMultipleObjectsQueryParams personsQueryParams)
         {
-            if (ids == null || ids.Length <= 0)
-                return null;
+            if (personsQueryParams == null || personsQueryParams.Count <= 0)
+                return new List<TraktPerson>();
 
-            var persons = new List<TraktPerson>(ids.Length);
+            var tasks = new List<Task<TraktPerson>>();
 
-            for (int i = 0; i < ids.Length; i++)
+            foreach (var queryParam in personsQueryParams)
             {
-                var show = await GetPersonAsync(ids[i], extended);
-
-                if (show != null)
-                    persons.Add(show);
+                Task<TraktPerson> task = GetPersonAsync(queryParam.Id, queryParam.ExtendedOption);
+                tasks.Add(task);
             }
 
-            return new TraktListResult<TraktPerson> { Items = persons };
+            var people = await Task.WhenAll(tasks);
+            return people.ToList();
         }
 
-        public async Task<TraktPersonMovieCredits> GetPersonMovieCreditsAsync(string id, TraktExtendedOption extended = null)
+        /// <summary>
+        /// Gets all movies where a person with the given Trakt-Id or -Slug is in the cast or crew.
+        /// <para>OAuth authorization not required.</para>
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/people/summary/get-movie-credits">"Trakt API Doc - People: Movies"</a> for more information.
+        /// </para>
+        /// </summary>
+        /// <param name="personIdOrSlug">The Trakt-Id or -Slug of the person, for which the movies should be queried.</param>
+        /// <param name="extendedOption">
+        /// The extended option, which determines how much data about the movies should be queried.
+        /// See also <seealso cref="TraktExtendedOption" />.
+        /// </param>
+        /// <returns>An <see cref="TraktPersonMovieCredits" /> instance with the queried person's movie credits.</returns>
+        /// <exception cref="Exceptions.TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">Thrown, if the given personIdOrSlug is null, empty or contains spaces.</exception>
+        [OAuthAuthorizationRequired(false)]
+        public async Task<TraktPersonMovieCredits> GetPersonMovieCreditsAsync([NotNull] string personIdOrSlug, TraktExtendedOption extendedOption = null)
         {
-            Validate(id);
+            Validate(personIdOrSlug);
 
             return await QueryAsync(new TraktPersonMovieCreditsRequest(Client)
             {
-                Id = id,
-                ExtendedOption = extended ?? new TraktExtendedOption()
+                Id = personIdOrSlug,
+                ExtendedOption = extendedOption
             });
         }
 
-        public async Task<TraktPersonShowCredits> GetPersonShowCreditsAsync(string id, TraktExtendedOption extended = null)
+        /// <summary>
+        /// Gets all shows where a person with the given Trakt-Id or -Slug is in the cast or crew.
+        /// <para>OAuth authorization not required.</para>
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/people/shows/get-show-credits">"Trakt API Doc - People: Shows"</a> for more information.
+        /// </para>
+        /// </summary>
+        /// <param name="personIdOrSlug">The Trakt-Id or -Slug of the person, for which the shows should be queried.</param>
+        /// <param name="extendedOption">
+        /// The extended option, which determines how much data about the shows should be queried.
+        /// See also <seealso cref="TraktExtendedOption" />.
+        /// </param>
+        /// <returns>An <see cref="TraktPersonShowCredits" /> instance with the queried person's show credits.</returns>
+        /// <exception cref="Exceptions.TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">Thrown, if the given personIdOrSlug is null, empty or contains spaces.</exception>
+        [OAuthAuthorizationRequired(false)]
+        public async Task<TraktPersonShowCredits> GetPersonShowCreditsAsync([NotNull] string personIdOrSlug, TraktExtendedOption extendedOption = null)
         {
-            Validate(id);
+            Validate(personIdOrSlug);
 
             return await QueryAsync(new TraktPersonShowCreditsRequest(Client)
             {
-                Id = id,
-                ExtendedOption = extended ?? new TraktExtendedOption()
+                Id = personIdOrSlug,
+                ExtendedOption = extendedOption
             });
         }
 
-        private void Validate(string id)
+        private void Validate(string personIdOrSlug)
         {
-            if (string.IsNullOrEmpty(id))
-                throw new ArgumentException("person id not valid", "id");
+            if (string.IsNullOrEmpty(personIdOrSlug) || personIdOrSlug.ContainsSpace())
+                throw new ArgumentException("person id or slug not valid", nameof(personIdOrSlug));
         }
     }
 }

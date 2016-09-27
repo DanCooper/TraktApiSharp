@@ -25,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,41 +34,57 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>0618</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FluentAssertions, Version=4.3.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FluentAssertions.4.3.2\lib\net45\FluentAssertions.dll</HintPath>
+    <Reference Include="FluentAssertions, Version=4.14.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FluentAssertions.4.14.0\lib\net45\FluentAssertions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FluentAssertions.Core, Version=4.3.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\FluentAssertions.4.3.2\lib\net45\FluentAssertions.Core.dll</HintPath>
+    <Reference Include="FluentAssertions.Core, Version=4.14.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FluentAssertions.4.14.0\lib\net45\FluentAssertions.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.Win32.Primitives.4.0.1\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RichardSzalay.MockHttp, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\RichardSzalay.MockHttp.1.2.2\lib\net45\RichardSzalay.MockHttp.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RichardSzalay.MockHttp, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\RichardSzalay.MockHttp.1.3.0\lib\net45\RichardSzalay.MockHttp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.Extensions, Version=2.1.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Microsoft.Net.Http.2.1.10\lib\net45\System.Net.Http.Extensions.dll</HintPath>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Diagnostics.DiagnosticSource.4.0.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Net.Http.Primitives, Version=4.0.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Microsoft.Net.Http.2.1.10\lib\net45\System.Net.Http.Primitives.dll</HintPath>
+    <Reference Include="System.Net.Http, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Net.Http.4.1.0\lib\net46\System.Net.Http.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="Tavis.UriTemplates, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Tavis.UriTemplates.1.0.0\lib\Net45\Tavis.UriTemplates.dll</HintPath>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Security.Cryptography.Algorithms.4.2.0\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Security.Cryptography.Encoding.4.0.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Security.Cryptography.Primitives.4.0.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Security.Cryptography.X509Certificates.4.1.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -82,7 +99,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Authentication\TraktAccessTokenTests.cs" />
+    <Compile Include="Authentication\TraktAuthorizationTests.cs" />
     <Compile Include="Authentication\TraktAuthenticationTests.cs" />
     <Compile Include="Authentication\TraktDeviceAuthTests.cs" />
     <Compile Include="Authentication\TraktDeviceTests.cs" />
@@ -90,7 +107,93 @@
     <Compile Include="Enums\TraktAccessScopeTests.cs" />
     <Compile Include="Enums\TraktAccessTokenTypeTests.cs" />
     <Compile Include="Enums\TraktAccessTokenGrantTypeTests.cs" />
+    <Compile Include="Enums\TraktSearchFieldTests.cs" />
+    <Compile Include="Enums\TraktSearchIdTypeTests.cs" />
     <Compile Include="Exceptions\TraktCheckinExceptionTests.cs" />
+    <Compile Include="Experimental\Requests\Base\ATraktBaseRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\ATraktListRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\ATraktNoContentRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\ATraktPaginationRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\ATraktSingleItemRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Delete\ATraktNoContentDeleteByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Delete\ATraktNoContentDeleteRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Get\ATraktListGetByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Get\ATraktListGetRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Get\ATraktNoContentGetByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Get\ATraktNoContentGetRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Get\ATraktPaginationGetByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Get\ATraktPaginationGetRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Get\ATraktSingleItemGetByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Get\ATraktSingleItemGetRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\ITraktHasIdTests.cs" />
+    <Compile Include="Experimental\Requests\Base\ITraktHasRequestBodyTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\ATraktListPostByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\ATraktListPostRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\ATraktNoContentPostByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\ATraktNoContentPostRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\ATraktPaginationPostByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\ATraktPaginationPostRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\ATraktSingleItemPostByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\ATraktSingleItemPostRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\Bodyless\ATraktListBodylessPostByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\Bodyless\ATraktListBodylessPostRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\Bodyless\ATraktNoContentBodylessPostByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\Bodyless\ATraktNoContentBodylessPostRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\Bodyless\ATraktPaginationBodylessPostByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\Bodyless\ATraktPaginationBodylessPostRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\Bodyless\ATraktSingleItemBodylessPostByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Post\Bodyless\ATraktSingleItemBodylessPostRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Put\ATraktListPutByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Put\ATraktListPutRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Put\ATraktNoContentPutByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Put\ATraktNoContentPutRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Put\ATraktPaginationPutByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Put\ATraktPaginationPutRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Put\ATraktSingleItemPutByIdRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\Put\ATraktSingleItemPutRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Base\TraktRequestBodyTests.cs" />
+    <Compile Include="Experimental\Requests\Base\TraktRequestIdTests.cs" />
+    <Compile Include="Experimental\Requests\Calendars\ATraktCalendarAllRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Calendars\ATraktCalendarRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Calendars\OAuth\ATraktCalendarUserRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Calendars\OAuth\TraktCalendarUserMoviesRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Calendars\OAuth\TraktCalendarUserNewShowsRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Calendars\OAuth\TraktCalendarUserSeasonPremieresRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Calendars\OAuth\TraktCalendarUserShowsRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Calendars\TraktCalendarAllMoviesRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Calendars\TraktCalendarAllNewShowsRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Calendars\TraktCalendarAllSeasonPremieresRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Calendars\TraktCalendarAllShowsRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Genres\ATraktGenresRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Genres\TraktGenresMoviesRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Genres\TraktGenresShowsRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktCheckinRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktExtendedInfoTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktFilterableTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktHttpRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktIdTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktListRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktNoContentRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktObjectRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktPaginationRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktPaginationTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktPostableTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktRequestAuthorizationTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktSingleItemRequestTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktUriBuildableTests.cs" />
+    <Compile Include="Experimental\Requests\Interfaces\ITraktValidatableTests.cs" />
+    <Compile Include="Experimental\Requests\People\ATraktPersonCreditsRequestTests.cs" />
+    <Compile Include="Experimental\Requests\People\TraktPersonMovieCreditsRequestTests.cs" />
+    <Compile Include="Experimental\Requests\People\TraktPersonShowCreditsRequestTests.cs" />
+    <Compile Include="Experimental\Requests\People\TraktPersonSummaryRequestTests.cs" />
+    <Compile Include="Experimental\Responses\ATraktResponseTests.cs" />
+    <Compile Include="Experimental\Responses\ITraktPaginationResponseHeadersTests.cs" />
+    <Compile Include="Experimental\Responses\ITraktResponseHeadersTests.cs" />
+    <Compile Include="Experimental\Responses\TraktListResponseTests.cs" />
+    <Compile Include="Experimental\Responses\TraktNoContentResponseTests.cs" />
+    <Compile Include="Experimental\Responses\TraktPaginationResponseTests.cs" />
+    <Compile Include="Experimental\Responses\TraktResponseTests.cs" />
     <Compile Include="Modules\TraktBaseModuleTests.cs" />
     <Compile Include="Modules\TraktCalendarModuleTests.cs" />
     <Compile Include="Modules\TraktCheckinsModuleTests.cs" />
@@ -104,6 +207,14 @@
     <Compile Include="Modules\TraktSearchModuleTests.cs" />
     <Compile Include="Modules\TraktSeasonsModuleTests.cs" />
     <Compile Include="Modules\TraktShowsModuleTests.cs" />
+    <Compile Include="Modules\TraktSyncModuleTests.cs" />
+    <Compile Include="Modules\TraktUsersModuleTests.cs" />
+    <Compile Include="Objects\Post\Syncs\Collection\TraktSyncCollectionPostBuilderTests.cs" />
+    <Compile Include="Objects\Post\Syncs\History\TraktSyncHistoryPostBuilderTests.cs" />
+    <Compile Include="Objects\Post\Syncs\History\TraktSyncHistoryRemovePostBuilderTests.cs" />
+    <Compile Include="Objects\Post\Syncs\Ratings\TraktSyncRatingsPostBuilderTests.cs" />
+    <Compile Include="Objects\Post\Syncs\Watchlist\TraktSyncWatchlistPostBuilderTests.cs" />
+    <Compile Include="Objects\Post\Users\CustomListItems\TraktUserCustomListItemsPostBuilderTests.cs" />
     <Compile Include="Requests\Base\Delete\TraktDeleteByIdRequestTests.cs" />
     <Compile Include="Requests\Base\Delete\TraktDeleteRequestTests.cs" />
     <Compile Include="Requests\Base\Get\TraktGetByIdRequestTests.cs" />
@@ -114,10 +225,11 @@
     <Compile Include="Requests\Base\Post\TraktPostRequestTests.cs" />
     <Compile Include="Requests\Base\Put\TraktPutByIdRequestTests.cs" />
     <Compile Include="Requests\Base\Put\TraktPutRequestTests.cs" />
-    <Compile Include="Requests\Base\TraktAuthenticationRequirementTests.cs" />
+    <Compile Include="Requests\Base\TraktAuthorizationRequirementTests.cs" />
     <Compile Include="Enums\TraktCommentSortOrderTests.cs" />
     <Compile Include="Enums\TraktCommentTypeTests.cs" />
-    <Compile Include="Requests\Base\TraktExtendedOptionTests.cs" />
+    <Compile Include="Requests\Params\TraktCalendarFilterTests.cs" />
+    <Compile Include="Requests\Params\TraktExtendedOptionTests.cs" />
     <Compile Include="Enums\TraktGenreTypeTests.cs" />
     <Compile Include="Enums\TraktHiddenItemsSectionTests.cs" />
     <Compile Include="Enums\TraktHiddenItemTypeTests.cs" />
@@ -126,19 +238,19 @@
     <Compile Include="Enums\TraktMediaAudioTests.cs" />
     <Compile Include="Enums\TraktMediaResolutionTests.cs" />
     <Compile Include="Enums\TraktMediaTypeTests.cs" />
-    <Compile Include="Requests\Base\TraktObjectTypeTests.cs" />
-    <Compile Include="Enums\TraktPeriodTests.cs" />
+    <Compile Include="Requests\Params\TraktMovieFilterTests.cs" />
+    <Compile Include="Enums\TraktObjectTypeTests.cs" />
+    <Compile Include="Enums\TraktTimePeriodTests.cs" />
     <Compile Include="Enums\TraktReleaseTypeTests.cs" />
-    <Compile Include="Enums\TraktRequestObjectTypeTests.cs" />
+    <Compile Include="Requests\Base\TraktRequestObjectTypeTests.cs" />
     <Compile Include="Enums\TraktScrobbleActionTypeTests.cs" />
-    <Compile Include="Enums\TraktSearchLookupIdTypeTests.cs" />
+    <Compile Include="Enums\TraktSearchIdLookupTypeTests.cs" />
     <Compile Include="Enums\TraktSearchResultTypeTests.cs" />
     <Compile Include="Enums\TraktShowStatusTests.cs" />
-    <Compile Include="Enums\TraktSyncHistoryActionTypeTests.cs" />
-    <Compile Include="Enums\TraktSyncHistoryItemTypeTests.cs" />
-    <Compile Include="Enums\TraktSyncRatingsItemTypeTests.cs" />
+    <Compile Include="Enums\TraktHistoryActionTypeTests.cs" />
+    <Compile Include="Enums\TraktSyncItemTypeTests.cs" />
+    <Compile Include="Enums\TraktRatingsItemTypeTests.cs" />
     <Compile Include="Enums\TraktSyncTypeTests.cs" />
-    <Compile Include="Enums\TraktSyncWatchlistItemTypeTests.cs" />
     <Compile Include="Enums\TraktUserLikeTypeTests.cs" />
     <Compile Include="Exceptions\TraktAuthenticationDeviceExceptionTests.cs" />
     <Compile Include="Exceptions\TraktAuthenticationExceptionTests.cs" />
@@ -175,64 +287,39 @@
     <Compile Include="Objects\Get\Movies\Common\TraktMoviesMostCollectedTests.cs" />
     <Compile Include="Objects\Get\Movies\Common\TraktMoviesMostPlayedTests.cs" />
     <Compile Include="Objects\Get\Movies\Common\TraktMoviesMostWatchedTests.cs" />
-    <Compile Include="Objects\Get\Movies\Common\TraktMoviesPopularTests.cs" />
     <Compile Include="Objects\Get\Movies\Common\TraktMoviesRecentlyUpdatedTests.cs" />
     <Compile Include="Objects\Get\Movies\Common\TraktMoviesTrendingTests.cs" />
     <Compile Include="Objects\Get\Movies\TraktMovieAliasesTests.cs" />
-    <Compile Include="Objects\Get\Movies\TraktMovieCommentsTests.cs" />
-    <Compile Include="Objects\Get\Movies\TraktMoviePeopleTests.cs" />
-    <Compile Include="Objects\Get\Movies\TraktMovieRatingTests.cs" />
     <Compile Include="Objects\Get\Movies\TraktMovieRelatedMoviesTests.cs" />
     <Compile Include="Objects\Get\Movies\TraktMovieReleasesTests.cs" />
     <Compile Include="Objects\Get\Movies\TraktMovieSingleAliasTests.cs" />
     <Compile Include="Objects\Get\Movies\TraktMovieSingleReleaseTests.cs" />
     <Compile Include="Objects\Get\Movies\TraktMovieSingleTranslationTests.cs" />
-    <Compile Include="Objects\Get\Movies\TraktMovieStatisticsTests.cs" />
     <Compile Include="Objects\Get\Movies\TraktMovieTests.cs" />
     <Compile Include="Objects\Get\Movies\TraktMovieTranslationsTests.cs" />
-    <Compile Include="Objects\Get\Movies\TraktMovieWatchingUsersTests.cs" />
     <Compile Include="Objects\Get\People\Credits\TraktPersonMovieCreditsTests.cs" />
     <Compile Include="Objects\Get\People\Credits\TraktPersonShowCreditsTests.cs" />
     <Compile Include="Objects\Get\People\TraktPersonTests.cs" />
-    <Compile Include="Objects\Get\Recommendations\TraktMovieRecommendationsTests.cs" />
-    <Compile Include="Objects\Get\Recommendations\TraktMovieSingleRecommendationTests.cs" />
-    <Compile Include="Objects\Get\Recommendations\TraktShowRecommendationsTests.cs" />
-    <Compile Include="Objects\Get\Recommendations\TraktShowSingleRecommendationTests.cs" />
     <Compile Include="Objects\Get\Shows\Common\TraktShowsMostAnticipatedTests.cs" />
     <Compile Include="Objects\Get\Shows\Common\TraktShowsMostCollectedTests.cs" />
     <Compile Include="Objects\Get\Shows\Common\TraktShowsMostPlayedTests.cs" />
     <Compile Include="Objects\Get\Shows\Common\TraktShowsMostWatchedTests.cs" />
-    <Compile Include="Objects\Get\Shows\Common\TraktShowsPopularTests.cs" />
     <Compile Include="Objects\Get\Shows\Common\TraktShowsRecentlyUpdatedTests.cs" />
     <Compile Include="Objects\Get\Shows\Common\TraktShowsTrendingTests.cs" />
-    <Compile Include="Objects\Get\Shows\Episodes\TraktEpisodeCommentsTests.cs" />
-    <Compile Include="Objects\Get\Shows\Episodes\TraktEpisodeRatingTests.cs" />
-    <Compile Include="Objects\Get\Shows\Episodes\TraktEpisodeStatisticsTests.cs" />
     <Compile Include="Objects\Get\Shows\Episodes\TraktEpisodeTests.cs" />
-    <Compile Include="Objects\Get\Shows\Episodes\TraktEpisodeWatchingUsersTests.cs" />
-    <Compile Include="Objects\Get\Shows\Seasons\TraktSeasonCommentsTests.cs" />
-    <Compile Include="Objects\Get\Shows\Seasons\TraktSeasonRatingTests.cs" />
     <Compile Include="Objects\Get\Shows\Seasons\TraktSeasonsAllTests.cs" />
-    <Compile Include="Objects\Get\Shows\Seasons\TraktSeasonStatisticsTests.cs" />
     <Compile Include="Objects\Get\Shows\Seasons\TraktSeasonTests.cs" />
-    <Compile Include="Objects\Get\Shows\Seasons\TraktSeasonWatchingUsersTests.cs" />
     <Compile Include="Objects\Get\Shows\TraktShowCollectionProgressTests.cs" />
-    <Compile Include="Objects\Get\Shows\TraktShowCommentsTests.cs" />
     <Compile Include="Objects\Get\Shows\TraktShowAliasesTests.cs" />
-    <Compile Include="Objects\Get\Shows\TraktShowPeopleTests.cs" />
-    <Compile Include="Objects\Get\Shows\TraktShowRatingTests.cs" />
     <Compile Include="Objects\Get\Shows\TraktShowRelatedShowsTests.cs" />
     <Compile Include="Objects\Get\Shows\TraktShowSingleAliasTests.cs" />
     <Compile Include="Objects\Get\Shows\TraktShowSingleTranslationTests.cs" />
-    <Compile Include="Objects\Get\Shows\TraktShowStatisticsTests.cs" />
     <Compile Include="Objects\Get\Shows\TraktShowTests.cs" />
     <Compile Include="Objects\Get\Shows\TraktShowTranslationsTests.cs" />
     <Compile Include="Objects\Get\Shows\TraktShowWatchedProgressTests.cs" />
-    <Compile Include="Objects\Get\Shows\TraktShowWatchingUsersTests.cs" />
     <Compile Include="Objects\Basic\TraktCastAndCrewTests.cs" />
     <Compile Include="Objects\Basic\TraktCastMemberTests.cs" />
     <Compile Include="Objects\Basic\TraktCommentTests.cs" />
-    <Compile Include="Objects\Basic\TraktConnectionsTests.cs" />
     <Compile Include="Objects\Basic\TraktCrewMemberTests.cs" />
     <Compile Include="Objects\Basic\TraktCrewTests.cs" />
     <Compile Include="Objects\Basic\TraktErrorTests.cs" />
@@ -241,33 +328,28 @@
     <Compile Include="Objects\Basic\TraktImageSetTests.cs" />
     <Compile Include="Objects\Basic\TraktImageTests.cs" />
     <Compile Include="Objects\Basic\TraktRatingTests.cs" />
-    <Compile Include="Objects\Basic\TraktSearchIdLookupResultTests.cs" />
     <Compile Include="Objects\Basic\TraktSearchResultTests.cs" />
     <Compile Include="Objects\Basic\TraktSharingTests.cs" />
     <Compile Include="Objects\Basic\TraktStatisticsTests.cs" />
-    <Compile Include="Objects\Get\Syncs\Collection\TraktSyncCollectionMovieItemTests.cs" />
-    <Compile Include="Objects\Get\Syncs\Collection\TraktSyncCollectionShowItemTests.cs" />
+    <Compile Include="Objects\Get\Collection\TraktCollectionMovieTests.cs" />
+    <Compile Include="Objects\Get\Collection\TraktCollectionShowTests.cs" />
     <Compile Include="Objects\Get\Syncs\Activities\TraktSyncLastActivitiesTests.cs" />
-    <Compile Include="Objects\Get\Syncs\History\TraktSyncHistoryItemTests.cs" />
+    <Compile Include="Objects\Get\History\TraktHistoryItemTests.cs" />
     <Compile Include="Objects\Get\Syncs\Playback\TraktSyncPlaybackProgressItemTests.cs" />
-    <Compile Include="Objects\Get\Syncs\Ratings\TraktSyncRatingsItemTests.cs" />
-    <Compile Include="Objects\Get\Syncs\Watched\TraktSyncWatchedMovieItemTests.cs" />
-    <Compile Include="Objects\Get\Syncs\Watched\TraktSyncWatchedShowItemTests.cs" />
-    <Compile Include="Objects\Get\Syncs\Watchlist\TraktSyncWatchlistItemTests.cs" />
-    <Compile Include="Objects\Get\Users\Lists\TraktListCommentsTests.cs" />
+    <Compile Include="Objects\Get\Ratings\TraktRatingsItemTests.cs" />
+    <Compile Include="Objects\Get\Watched\TraktWatchedMovieTests.cs" />
+    <Compile Include="Objects\Get\Watched\TraktWatchedShowTests.cs" />
+    <Compile Include="Objects\Get\Watchlist\TraktWatchlistItemTests.cs" />
     <Compile Include="Objects\Get\Users\Lists\TraktListItemTests.cs" />
     <Compile Include="Objects\Get\Users\Lists\TraktListTests.cs" />
     <Compile Include="Objects\Get\Users\TraktAccountSettingsTests.cs" />
     <Compile Include="Objects\Get\Users\TraktSharingTextTests.cs" />
-    <Compile Include="Objects\Get\Users\TraktUserCollectionTests.cs" />
     <Compile Include="Objects\Get\Users\TraktUserCommentTests.cs" />
     <Compile Include="Objects\Get\Users\TraktUserFollowersTests.cs" />
     <Compile Include="Objects\Get\Users\TraktUserFollowRequestTests.cs" />
     <Compile Include="Objects\Get\Users\TraktUserFriendsTests.cs" />
     <Compile Include="Objects\Get\Users\TraktUserHiddenItemsTests.cs" />
-    <Compile Include="Objects\Get\Users\TraktUserHistoryItemTests.cs" />
     <Compile Include="Objects\Get\Users\TraktUserLikeItemTests.cs" />
-    <Compile Include="Objects\Get\Users\TraktUserRatingsItemTests.cs" />
     <Compile Include="Objects\Get\Users\TraktUserSingleFollowerTests.cs" />
     <Compile Include="Objects\Get\Users\TraktUserSettingsTests.cs" />
     <Compile Include="Objects\Get\Users\TraktUserSingleFriendTests.cs" />
@@ -275,9 +357,6 @@
     <Compile Include="Objects\Get\Users\TraktUserStatisticsTests.cs" />
     <Compile Include="Objects\Get\Users\TraktUserTests.cs" />
     <Compile Include="Objects\Get\Users\TraktUserWatchingItemTests.cs" />
-    <Compile Include="Objects\Get\Users\TraktUserWatchlistItemTests.cs" />
-    <Compile Include="Objects\Get\Users\Watched\TraktUserWatchedMovieItemTests.cs" />
-    <Compile Include="Objects\Get\Users\Watched\TraktUserWatchedShowItemTests.cs" />
     <Compile Include="Objects\Post\Checkins\Responses\TraktCheckinPostErrorResponseTests.cs" />
     <Compile Include="Objects\Post\Checkins\Responses\TraktEpisodeCheckinPostResponseTests.cs" />
     <Compile Include="Objects\Post\Checkins\Responses\TraktMovieCheckinPostResponseTests.cs" />
@@ -298,7 +377,6 @@
     <Compile Include="Objects\Post\Syncs\Collection\Responses\TraktSyncCollectionPostResponseTests.cs" />
     <Compile Include="Objects\Post\Syncs\Collection\Responses\TraktSyncCollectionRemovePostResponseTests.cs" />
     <Compile Include="Objects\Post\Syncs\Collection\TraktSyncCollectionPostTests.cs" />
-    <Compile Include="Objects\Post\Syncs\Collection\TraktSyncCollectionRemovePostTests.cs" />
     <Compile Include="Objects\Post\Syncs\History\Responses\TraktSyncHistoryPostResponseTests.cs" />
     <Compile Include="Objects\Post\Syncs\History\Responses\TraktSyncHistoryRemovePostResponseTests.cs" />
     <Compile Include="Objects\Post\Syncs\History\TraktSyncHistoryPostTests.cs" />
@@ -306,20 +384,14 @@
     <Compile Include="Objects\Post\Syncs\Ratings\Responses\TraktSyncRatingsPostResponseTests.cs" />
     <Compile Include="Objects\Post\Syncs\Ratings\Responses\TraktSyncRatingsRemovePostResponseTests.cs" />
     <Compile Include="Objects\Post\Syncs\Ratings\TraktSyncRatingsPostTests.cs" />
-    <Compile Include="Objects\Post\Syncs\Ratings\TraktSyncRatingsRemovePostTests.cs" />
     <Compile Include="Objects\Post\Syncs\Watchlist\Responses\TraktSyncWatchlistPostResponseTests.cs" />
     <Compile Include="Objects\Post\Syncs\Watchlist\Responses\TraktSyncWatchlistRemovePostResponseTests.cs" />
     <Compile Include="Objects\Post\Syncs\Watchlist\TraktSyncWatchlistPostTests.cs" />
-    <Compile Include="Objects\Post\Syncs\Watchlist\TraktSyncWatchlistRemovePostTests.cs" />
     <Compile Include="Objects\Post\Users\CustomListItems\Responses\TraktUserCustomListItemsPostResponseTests.cs" />
     <Compile Include="Objects\Post\Users\CustomListItems\Responses\TraktUserCustomListItemsRemovePostResponseTests.cs" />
-    <Compile Include="Objects\Post\Users\CustomListItems\TraktUserCustomListItemsRemovePostTests.cs" />
     <Compile Include="Objects\Post\Users\CustomListItems\TraktUserCustomListItemsPostTests.cs" />
     <Compile Include="Objects\Post\Users\Responses\TraktUserFollowUserPostResponseTests.cs" />
-    <Compile Include="Objects\Post\Users\Responses\TraktUserCustomListPostResponseTests.cs" />
-    <Compile Include="Objects\Post\Users\Responses\TraktUserCustomListUpdatePostResponseTests.cs" />
     <Compile Include="Objects\Post\Users\TraktUserCustomListPostTests.cs" />
-    <Compile Include="Objects\Post\Users\TraktUserCustomListUpdatePostTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -328,6 +400,8 @@
     <Compile Include="Requests\Base\ITraktRequestTests.cs" />
     <Compile Include="Requests\Base\TraktPaginationOptionsTests.cs" />
     <Compile Include="Requests\Base\TraktRequestTests.cs" />
+    <Compile Include="Requests\Params\TraktSearchFilterTests.cs" />
+    <Compile Include="Requests\Params\TraktShowFilterTests.cs" />
     <Compile Include="Requests\WithOAuth\Calendars\TraktCalendarUserMoviesRequestTests.cs" />
     <Compile Include="Requests\WithOAuth\Calendars\TraktCalendarUserNewShowsRequestTests.cs" />
     <Compile Include="Requests\WithOAuth\Calendars\TraktCalendarUserRequestTests.cs" />
@@ -338,6 +412,8 @@
     <Compile Include="Requests\WithoutOAuth\Calendars\TraktCalendarAllRequestTests.cs" />
     <Compile Include="Requests\WithoutOAuth\Calendars\TraktCalendarAllSeasonPremieresRequestTests.cs" />
     <Compile Include="Requests\WithoutOAuth\Calendars\TraktCalendarAllShowsRequestTests.cs" />
+    <Compile Include="Services\TraktLanguageServiceTests.cs" />
+    <Compile Include="Services\TraktSerializationServiceTests.cs" />
     <Compile Include="TraktClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TraktConfigurationTests.cs" />
@@ -357,7 +433,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="TestData\Authentication\AccessToken.json" />
     <None Include="TestData\Authentication\Device.json" />
     <None Include="TestData\Objects\Basic\CastAndCrew.json" />
@@ -398,7 +476,6 @@
     <None Include="TestData\Objects\Get\Movies\Common\MoviesRecentlyUpdated.json" />
     <None Include="TestData\Objects\Get\Movies\Common\MoviesTrending.json" />
     <None Include="TestData\Objects\Get\Movies\MovieAliases.json" />
-    <None Include="TestData\Objects\Get\Movies\MovieComments.json" />
     <None Include="TestData\Objects\Get\Movies\MoviePeople.json" />
     <None Include="TestData\Objects\Get\Movies\MovieRatings.json" />
     <None Include="TestData\Objects\Get\Movies\MovieRelatedMoviesFull.json" />
@@ -483,39 +560,38 @@
     <None Include="TestData\Objects\Get\Shows\ShowWatchedProgress.json" />
     <None Include="TestData\Objects\Get\Shows\ShowWatchedProgressComplete.json" />
     <None Include="TestData\Objects\Get\Shows\ShowWatchingUsers.json" />
-    <None Include="TestData\Objects\Get\Syncs\Collection\SyncCollectionMovies.json" />
-    <None Include="TestData\Objects\Get\Syncs\Collection\SyncCollectionMoviesMetadata.json" />
-    <None Include="TestData\Objects\Get\Syncs\Collection\SyncCollectionShows.json" />
-    <None Include="TestData\Objects\Get\Syncs\Collection\SyncCollectionShowsMetadata.json" />
+    <None Include="TestData\Objects\Get\Collection\CollectionMovies.json" />
+    <None Include="TestData\Objects\Get\Collection\CollectionMoviesMetadata.json" />
+    <None Include="TestData\Objects\Get\Collection\CollectionShows.json" />
+    <None Include="TestData\Objects\Get\Collection\CollectionShowsMetadata.json" />
     <None Include="TestData\Objects\Get\Syncs\Activities\SyncLastActivities.json" />
-    <None Include="TestData\Objects\Get\Syncs\History\SyncHistory.json" />
+    <None Include="TestData\Objects\Get\History\History.json" />
+    <None Include="TestData\Objects\Get\Syncs\Playback\SyncPlaybackProgress.json" />
     <None Include="TestData\Objects\Get\Syncs\Playback\SyncPlaybackProgressItemEpisode.json" />
     <None Include="TestData\Objects\Get\Syncs\Playback\SyncPlaybackProgressItemMovie.json" />
-    <None Include="TestData\Objects\Get\Syncs\Ratings\SyncRatingsEpisodes.json" />
-    <None Include="TestData\Objects\Get\Syncs\Ratings\SyncRatingsMovies.json" />
-    <None Include="TestData\Objects\Get\Syncs\Ratings\SyncRatingsSeasons.json" />
-    <None Include="TestData\Objects\Get\Syncs\Ratings\SyncRatingsShows.json" />
-    <None Include="TestData\Objects\Get\Syncs\Watched\SyncWatchedMovies.json" />
-    <None Include="TestData\Objects\Get\Syncs\Watched\SyncWatchedShows.json" />
-    <None Include="TestData\Objects\Get\Syncs\Watched\SyncWatchedShowsNoSeasons.json" />
-    <None Include="TestData\Objects\Get\Syncs\Watchlist\SyncWatchlistEpisodes.json" />
-    <None Include="TestData\Objects\Get\Syncs\Watchlist\SyncWatchlistMovies.json" />
-    <None Include="TestData\Objects\Get\Syncs\Watchlist\SyncWatchlistSeasons.json" />
-    <None Include="TestData\Objects\Get\Syncs\Watchlist\SyncWatchlistShows.json" />
+    <None Include="TestData\Objects\Get\Ratings\Ratings.json" />
+    <None Include="TestData\Objects\Get\Ratings\RatingsEpisodes.json" />
+    <None Include="TestData\Objects\Get\Ratings\RatingsMovies.json" />
+    <None Include="TestData\Objects\Get\Ratings\RatingsSeasons.json" />
+    <None Include="TestData\Objects\Get\Ratings\RatingsShows.json" />
+    <None Include="TestData\Objects\Get\Watched\WatchedMovies.json" />
+    <None Include="TestData\Objects\Get\Watched\WatchedShows.json" />
+    <None Include="TestData\Objects\Get\Watched\WatchedShowsNoSeasons.json" />
+    <None Include="TestData\Objects\Get\Watchlist\Watchlist.json" />
+    <None Include="TestData\Objects\Get\Watchlist\WatchlistEpisodes.json" />
+    <None Include="TestData\Objects\Get\Watchlist\WatchlistMovies.json" />
+    <None Include="TestData\Objects\Get\Watchlist\WatchlistSeasons.json" />
+    <None Include="TestData\Objects\Get\Watchlist\WatchlistShows.json" />
     <None Include="TestData\Objects\Get\Users\AccountSettings.json" />
+    <None Include="TestData\Objects\Get\Users\Lists\CustomLists.json" />
     <None Include="TestData\Objects\Get\Users\Lists\List.json" />
     <None Include="TestData\Objects\Get\Users\Lists\ListComments.json" />
     <None Include="TestData\Objects\Get\Users\Lists\ListItems.json" />
-    <None Include="TestData\Objects\Get\Users\Ratings\UserRatingsEpisodes.json" />
-    <None Include="TestData\Objects\Get\Users\Ratings\UserRatingsMovies.json" />
-    <None Include="TestData\Objects\Get\Users\Ratings\UserRatingsSeasons.json" />
-    <None Include="TestData\Objects\Get\Users\Ratings\UserRatingsShows.json" />
     <None Include="TestData\Objects\Get\Users\SharingText.json" />
     <None Include="TestData\Objects\Get\Users\UserComments.json" />
+    <None Include="TestData\Objects\Get\Users\UserFollower.json" />
     <None Include="TestData\Objects\Get\Users\UserFollowRequest.json" />
-    <None Include="TestData\Objects\Get\Users\UserHistory.json" />
-    <None Include="TestData\Objects\Get\Users\UserCollectionMovies.json" />
-    <None Include="TestData\Objects\Get\Users\UserCollectionShows.json" />
+    <None Include="TestData\Objects\Get\Users\UserFollowRequests.json" />
     <None Include="TestData\Objects\Get\Users\UserFollowers.json" />
     <None Include="TestData\Objects\Get\Users\UserFriends.json" />
     <None Include="TestData\Objects\Get\Users\UserFull.json" />
@@ -524,21 +600,16 @@
     <None Include="TestData\Objects\Get\Users\UserImages.json" />
     <None Include="TestData\Objects\Get\Users\UserLikeComment.json" />
     <None Include="TestData\Objects\Get\Users\UserLikeList.json" />
+    <None Include="TestData\Objects\Get\Users\UserLikes.json" />
     <None Include="TestData\Objects\Get\Users\UserMinimal.json" />
+    <None Include="TestData\Objects\Get\Users\UserProfile.json" />
     <None Include="TestData\Objects\Get\Users\UserSettings.json" />
     <None Include="TestData\Objects\Get\Users\UserSingleFollower.json" />
     <None Include="TestData\Objects\Get\Users\UserSingleFriend.json" />
     <None Include="TestData\Objects\Get\Users\UserSingleHiddenItem.json" />
     <None Include="TestData\Objects\Get\Users\UserStatistics.json" />
-    <None Include="TestData\Objects\Get\Users\Watched\UserWatchedMovies.json" />
-    <None Include="TestData\Objects\Get\Users\Watched\UserWatchedShows.json" />
-    <None Include="TestData\Objects\Get\Users\Watched\UserWatchedShowsNoSeasons.json" />
     <None Include="TestData\Objects\Get\Users\Watching\UserWatchingItemEpisode.json" />
     <None Include="TestData\Objects\Get\Users\Watching\UserWatchingItemMovie.json" />
-    <None Include="TestData\Objects\Get\Users\Watchlist\UserWatchlistEpisodes.json" />
-    <None Include="TestData\Objects\Get\Users\Watchlist\UserWatchlistMovies.json" />
-    <None Include="TestData\Objects\Get\Users\Watchlist\UserWatchlistSeasons.json" />
-    <None Include="TestData\Objects\Get\Users\Watchlist\UserWatchlistShows.json" />
     <None Include="TestData\Objects\Post\Checkins\Responses\CheckinPostErrorResponse.json" />
     <None Include="TestData\Objects\Post\Checkins\Responses\EpisodeCheckinPostResponse.json" />
     <None Include="TestData\Objects\Post\Checkins\Responses\MovieCheckinPostResponse.json" />
@@ -560,8 +631,6 @@
     <None Include="TestData\Objects\Post\Users\CustomListItems\Responses\UserCustomListItemsPostResponse.json" />
     <None Include="TestData\Objects\Post\Users\CustomListItems\Responses\UserCustomListItemsRemovePostResponse.json" />
     <None Include="TestData\Objects\Post\Users\Responses\FollowUserPostResponse.json" />
-    <None Include="TestData\Objects\Post\Users\Responses\UserCustomListPostResponse.json" />
-    <None Include="TestData\Objects\Post\Users\Responses\UserCustomListUpdatePostResponse.json" />
   </ItemGroup>
   <ItemGroup />
   <Choose>
@@ -587,11 +656,9 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy /Y /S "$(ProjectDir)TestData\*" "$(TargetDir)TestData\"</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
-  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
-    <Error Condition="!Exists('..\..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
-    <Error Condition="Exists('..\..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
-  </Target>
+  <PropertyGroup>
+    <PreBuildEvent>rmdir /S /Q "$(TargetDir)TestData"</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -3,15 +3,15 @@
     using FluentAssertions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
     using TraktApiSharp.Exceptions;
     using TraktApiSharp.Modules;
-    using TraktApiSharp.Objects.Basic;
     using TraktApiSharp.Objects.Get.People;
     using TraktApiSharp.Objects.Get.People.Credits;
-    using TraktApiSharp.Requests;
+    using TraktApiSharp.Requests.Params;
     using Utils;
 
     [TestClass]
@@ -61,11 +61,11 @@
             response.Should().NotBeNull();
             response.Name.Should().Be("Bryan Cranston");
             response.Ids.Should().NotBeNull();
-            response.Ids.Trakt.Should().Be(297737);
+            response.Ids.Trakt.Should().Be(297737U);
             response.Ids.Slug.Should().Be("bryan-cranston");
             response.Ids.Imdb.Should().Be("nm0186505");
-            response.Ids.Tmdb.Should().Be(17419);
-            response.Ids.TvRage.Should().Be(1797);
+            response.Ids.Tmdb.Should().Be(17419U);
+            response.Ids.TvRage.Should().Be(1797U);
         }
 
         [TestMethod]
@@ -89,11 +89,11 @@
             response.Should().NotBeNull();
             response.Name.Should().Be("Bryan Cranston");
             response.Ids.Should().NotBeNull();
-            response.Ids.Trakt.Should().Be(297737);
+            response.Ids.Trakt.Should().Be(297737U);
             response.Ids.Slug.Should().Be("bryan-cranston");
             response.Ids.Imdb.Should().Be("nm0186505");
-            response.Ids.Tmdb.Should().Be(17419);
-            response.Ids.TvRage.Should().Be(1797);
+            response.Ids.Tmdb.Should().Be(17419U);
+            response.Ids.TvRage.Should().Be(1797U);
             response.Images.Should().NotBeNull();
             response.Images.Headshot.Should().NotBeNull();
             response.Images.Headshot.Full.Should().Be("https://walter.trakt.us/images/people/000/297/737/headshots/original/47aebaace9.jpg");
@@ -124,6 +124,10 @@
             act.ShouldThrow<TraktPersonNotFoundException>();
 
             TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.Unauthorized);
+            act.ShouldThrow<TraktAuthorizationException>();
+
+            TestUtility.ClearMockHttpClient();
             TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.BadRequest);
             act.ShouldThrow<TraktBadRequestException>();
 
@@ -132,16 +136,32 @@
             act.ShouldThrow<TraktForbiddenException>();
 
             TestUtility.ClearMockHttpClient();
-            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)412);
-            act.ShouldThrow<TraktPreconditionFailedException>();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.MethodNotAllowed);
+            act.ShouldThrow<TraktMethodNotFoundException>();
 
             TestUtility.ClearMockHttpClient();
-            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)429);
-            act.ShouldThrow<TraktRateLimitException>();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.Conflict);
+            act.ShouldThrow<TraktConflictException>();
 
             TestUtility.ClearMockHttpClient();
             TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.InternalServerError);
             act.ShouldThrow<TraktServerException>();
+
+            TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.BadGateway);
+            act.ShouldThrow<TraktBadGatewayException>();
+
+            TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)412);
+            act.ShouldThrow<TraktPreconditionFailedException>();
+
+            TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)422);
+            act.ShouldThrow<TraktValidationException>();
+
+            TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)429);
+            act.ShouldThrow<TraktRateLimitException>();
 
             TestUtility.ClearMockHttpClient();
             TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)503);
@@ -180,6 +200,9 @@
 
             act = async () => await TestUtility.MOCK_TEST_CLIENT.People.GetPersonAsync(string.Empty);
             act.ShouldThrow<ArgumentException>();
+
+            act = async () => await TestUtility.MOCK_TEST_CLIENT.People.GetPersonAsync("person id");
+            act.ShouldThrow<ArgumentException>();
         }
 
         #endregion
@@ -192,18 +215,25 @@
         [TestMethod]
         public void TestTraktPeopleModuleGetPersonsArgumentExceptions()
         {
-            Func<Task<TraktListResult<TraktPerson>>> act =
-                async () => await TestUtility.MOCK_TEST_CLIENT.People.GetPersonsAsync(new string[] { null });
-            act.ShouldThrow<ArgumentException>();
-
-            act = async () => await TestUtility.MOCK_TEST_CLIENT.People.GetPersonsAsync(new string[] { string.Empty });
-            act.ShouldThrow<ArgumentException>();
-
-            act = async () => await TestUtility.MOCK_TEST_CLIENT.People.GetPersonsAsync(new string[] { });
+            Func<Task<IEnumerable<TraktPerson>>> act =
+                async () => await TestUtility.MOCK_TEST_CLIENT.People.GetMultiplePersonsAsync(null);
             act.ShouldNotThrow();
 
-            act = async () => await TestUtility.MOCK_TEST_CLIENT.People.GetPersonsAsync(null);
+            act = async () => await TestUtility.MOCK_TEST_CLIENT.People.GetMultiplePersonsAsync(
+                new TraktMultipleObjectsQueryParams());
             act.ShouldNotThrow();
+
+            act = async () => await TestUtility.MOCK_TEST_CLIENT.People.GetMultiplePersonsAsync(
+                new TraktMultipleObjectsQueryParams { { null } });
+            act.ShouldThrow<ArgumentException>();
+
+            act = async () => await TestUtility.MOCK_TEST_CLIENT.People.GetMultiplePersonsAsync(
+                new TraktMultipleObjectsQueryParams { { string.Empty } });
+            act.ShouldThrow<ArgumentException>();
+
+            act = async () => await TestUtility.MOCK_TEST_CLIENT.People.GetMultiplePersonsAsync(
+                new TraktMultipleObjectsQueryParams { { "person id" } });
+            act.ShouldThrow<ArgumentException>();
         }
 
         #endregion
@@ -236,20 +266,20 @@
             cast[0].Movie.Title.Should().Be("Kung Fu Panda 3");
             cast[0].Movie.Year.Should().Be(2016);
             cast[0].Movie.Ids.Should().NotBeNull();
-            cast[0].Movie.Ids.Trakt.Should().Be(93870);
+            cast[0].Movie.Ids.Trakt.Should().Be(93870U);
             cast[0].Movie.Ids.Slug.Should().Be("kung-fu-panda-3-2016");
             cast[0].Movie.Ids.Imdb.Should().Be("tt2267968");
-            cast[0].Movie.Ids.Tmdb.Should().Be(140300);
+            cast[0].Movie.Ids.Tmdb.Should().Be(140300U);
 
             cast[1].Character.Should().Be("Joe Brody");
             cast[1].Movie.Should().NotBeNull();
             cast[1].Movie.Title.Should().Be("Godzilla");
             cast[1].Movie.Year.Should().Be(2014);
             cast[1].Movie.Ids.Should().NotBeNull();
-            cast[1].Movie.Ids.Trakt.Should().Be(24);
+            cast[1].Movie.Ids.Trakt.Should().Be(24U);
             cast[1].Movie.Ids.Slug.Should().Be("godzilla-2014");
             cast[1].Movie.Ids.Imdb.Should().Be("tt0831387");
-            cast[1].Movie.Ids.Tmdb.Should().Be(124905);
+            cast[1].Movie.Ids.Tmdb.Should().Be(124905U);
 
             response.Crew.Should().NotBeNull();
             response.Crew.Art.Should().BeNull();
@@ -265,10 +295,10 @@
             directing[0].Movie.Title.Should().Be("Godzilla");
             directing[0].Movie.Year.Should().Be(2014);
             directing[0].Movie.Ids.Should().NotBeNull();
-            directing[0].Movie.Ids.Trakt.Should().Be(24);
+            directing[0].Movie.Ids.Trakt.Should().Be(24U);
             directing[0].Movie.Ids.Slug.Should().Be("godzilla-2014");
             directing[0].Movie.Ids.Imdb.Should().Be("tt0831387");
-            directing[0].Movie.Ids.Tmdb.Should().Be(124905);
+            directing[0].Movie.Ids.Tmdb.Should().Be(124905U);
 
             response.Crew.Editing.Should().BeNull();
             response.Crew.Lighting.Should().BeNull();
@@ -281,10 +311,10 @@
             production[0].Movie.Title.Should().Be("Godzilla");
             production[0].Movie.Year.Should().Be(2014);
             production[0].Movie.Ids.Should().NotBeNull();
-            production[0].Movie.Ids.Trakt.Should().Be(24);
+            production[0].Movie.Ids.Trakt.Should().Be(24U);
             production[0].Movie.Ids.Slug.Should().Be("godzilla-2014");
             production[0].Movie.Ids.Imdb.Should().Be("tt0831387");
-            production[0].Movie.Ids.Tmdb.Should().Be(124905);
+            production[0].Movie.Ids.Tmdb.Should().Be(124905U);
 
             response.Crew.Sound.Should().BeNull();
             response.Crew.VisualEffects.Should().BeNull();
@@ -297,10 +327,10 @@
             writing[0].Movie.Title.Should().Be("Godzilla");
             writing[0].Movie.Year.Should().Be(2014);
             writing[0].Movie.Ids.Should().NotBeNull();
-            writing[0].Movie.Ids.Trakt.Should().Be(24);
+            writing[0].Movie.Ids.Trakt.Should().Be(24U);
             writing[0].Movie.Ids.Slug.Should().Be("godzilla-2014");
             writing[0].Movie.Ids.Imdb.Should().Be("tt0831387");
-            writing[0].Movie.Ids.Tmdb.Should().Be(124905);
+            writing[0].Movie.Ids.Tmdb.Should().Be(124905U);
         }
 
         [TestMethod]
@@ -333,20 +363,20 @@
             cast[0].Movie.Title.Should().Be("Kung Fu Panda 3");
             cast[0].Movie.Year.Should().Be(2016);
             cast[0].Movie.Ids.Should().NotBeNull();
-            cast[0].Movie.Ids.Trakt.Should().Be(93870);
+            cast[0].Movie.Ids.Trakt.Should().Be(93870U);
             cast[0].Movie.Ids.Slug.Should().Be("kung-fu-panda-3-2016");
             cast[0].Movie.Ids.Imdb.Should().Be("tt2267968");
-            cast[0].Movie.Ids.Tmdb.Should().Be(140300);
+            cast[0].Movie.Ids.Tmdb.Should().Be(140300U);
 
             cast[1].Character.Should().Be("Joe Brody");
             cast[1].Movie.Should().NotBeNull();
             cast[1].Movie.Title.Should().Be("Godzilla");
             cast[1].Movie.Year.Should().Be(2014);
             cast[1].Movie.Ids.Should().NotBeNull();
-            cast[1].Movie.Ids.Trakt.Should().Be(24);
+            cast[1].Movie.Ids.Trakt.Should().Be(24U);
             cast[1].Movie.Ids.Slug.Should().Be("godzilla-2014");
             cast[1].Movie.Ids.Imdb.Should().Be("tt0831387");
-            cast[1].Movie.Ids.Tmdb.Should().Be(124905);
+            cast[1].Movie.Ids.Tmdb.Should().Be(124905U);
 
             response.Crew.Should().NotBeNull();
             response.Crew.Art.Should().BeNull();
@@ -362,10 +392,10 @@
             directing[0].Movie.Title.Should().Be("Godzilla");
             directing[0].Movie.Year.Should().Be(2014);
             directing[0].Movie.Ids.Should().NotBeNull();
-            directing[0].Movie.Ids.Trakt.Should().Be(24);
+            directing[0].Movie.Ids.Trakt.Should().Be(24U);
             directing[0].Movie.Ids.Slug.Should().Be("godzilla-2014");
             directing[0].Movie.Ids.Imdb.Should().Be("tt0831387");
-            directing[0].Movie.Ids.Tmdb.Should().Be(124905);
+            directing[0].Movie.Ids.Tmdb.Should().Be(124905U);
 
             response.Crew.Editing.Should().BeNull();
             response.Crew.Lighting.Should().BeNull();
@@ -378,10 +408,10 @@
             production[0].Movie.Title.Should().Be("Godzilla");
             production[0].Movie.Year.Should().Be(2014);
             production[0].Movie.Ids.Should().NotBeNull();
-            production[0].Movie.Ids.Trakt.Should().Be(24);
+            production[0].Movie.Ids.Trakt.Should().Be(24U);
             production[0].Movie.Ids.Slug.Should().Be("godzilla-2014");
             production[0].Movie.Ids.Imdb.Should().Be("tt0831387");
-            production[0].Movie.Ids.Tmdb.Should().Be(124905);
+            production[0].Movie.Ids.Tmdb.Should().Be(124905U);
 
             response.Crew.Sound.Should().BeNull();
             response.Crew.VisualEffects.Should().BeNull();
@@ -394,10 +424,10 @@
             writing[0].Movie.Title.Should().Be("Godzilla");
             writing[0].Movie.Year.Should().Be(2014);
             writing[0].Movie.Ids.Should().NotBeNull();
-            writing[0].Movie.Ids.Trakt.Should().Be(24);
+            writing[0].Movie.Ids.Trakt.Should().Be(24U);
             writing[0].Movie.Ids.Slug.Should().Be("godzilla-2014");
             writing[0].Movie.Ids.Imdb.Should().Be("tt0831387");
-            writing[0].Movie.Ids.Tmdb.Should().Be(124905);
+            writing[0].Movie.Ids.Tmdb.Should().Be(124905U);
         }
 
         [TestMethod]
@@ -413,6 +443,10 @@
             act.ShouldThrow<TraktPersonNotFoundException>();
 
             TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.Unauthorized);
+            act.ShouldThrow<TraktAuthorizationException>();
+
+            TestUtility.ClearMockHttpClient();
             TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.BadRequest);
             act.ShouldThrow<TraktBadRequestException>();
 
@@ -421,16 +455,32 @@
             act.ShouldThrow<TraktForbiddenException>();
 
             TestUtility.ClearMockHttpClient();
-            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)412);
-            act.ShouldThrow<TraktPreconditionFailedException>();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.MethodNotAllowed);
+            act.ShouldThrow<TraktMethodNotFoundException>();
 
             TestUtility.ClearMockHttpClient();
-            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)429);
-            act.ShouldThrow<TraktRateLimitException>();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.Conflict);
+            act.ShouldThrow<TraktConflictException>();
 
             TestUtility.ClearMockHttpClient();
             TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.InternalServerError);
             act.ShouldThrow<TraktServerException>();
+
+            TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.BadGateway);
+            act.ShouldThrow<TraktBadGatewayException>();
+
+            TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)412);
+            act.ShouldThrow<TraktPreconditionFailedException>();
+
+            TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)422);
+            act.ShouldThrow<TraktValidationException>();
+
+            TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)429);
+            act.ShouldThrow<TraktRateLimitException>();
 
             TestUtility.ClearMockHttpClient();
             TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)503);
@@ -469,6 +519,9 @@
 
             act = async () => await TestUtility.MOCK_TEST_CLIENT.People.GetPersonMovieCreditsAsync(string.Empty);
             act.ShouldThrow<ArgumentException>();
+
+            act = async () => await TestUtility.MOCK_TEST_CLIENT.People.GetPersonMovieCreditsAsync("person id");
+            act.ShouldThrow<ArgumentException>();
         }
 
         #endregion
@@ -501,24 +554,24 @@
             cast[0].Show.Title.Should().Be("Breaking Bad");
             cast[0].Show.Year.Should().Be(2008);
             cast[0].Show.Ids.Should().NotBeNull();
-            cast[0].Show.Ids.Trakt.Should().Be(1);
+            cast[0].Show.Ids.Trakt.Should().Be(1U);
             cast[0].Show.Ids.Slug.Should().Be("breaking-bad");
-            cast[0].Show.Ids.Tvdb.Should().Be(81189);
+            cast[0].Show.Ids.Tvdb.Should().Be(81189U);
             cast[0].Show.Ids.Imdb.Should().Be("tt0903747");
-            cast[0].Show.Ids.Tmdb.Should().Be(1396);
-            cast[0].Show.Ids.TvRage.Should().Be(18164);
+            cast[0].Show.Ids.Tmdb.Should().Be(1396U);
+            cast[0].Show.Ids.TvRage.Should().Be(18164U);
 
             cast[1].Character.Should().Be("Hal");
             cast[1].Show.Should().NotBeNull();
             cast[1].Show.Title.Should().Be("Malcolm in the Middle");
             cast[1].Show.Year.Should().Be(2000);
             cast[1].Show.Ids.Should().NotBeNull();
-            cast[1].Show.Ids.Trakt.Should().Be(1991);
+            cast[1].Show.Ids.Trakt.Should().Be(1991U);
             cast[1].Show.Ids.Slug.Should().Be("malcolm-in-the-middle");
-            cast[1].Show.Ids.Tvdb.Should().Be(73838);
+            cast[1].Show.Ids.Tvdb.Should().Be(73838U);
             cast[1].Show.Ids.Imdb.Should().Be("tt0212671");
-            cast[1].Show.Ids.Tmdb.Should().Be(2004);
-            cast[1].Show.Ids.TvRage.Should().NotHaveValue();
+            cast[1].Show.Ids.Tmdb.Should().Be(2004U);
+            cast[1].Show.Ids.TvRage.Should().BeNull();
 
             response.Crew.Should().NotBeNull();
             response.Crew.Art.Should().BeNull();
@@ -537,12 +590,12 @@
             production[0].Show.Title.Should().Be("Breaking Bad");
             production[0].Show.Year.Should().Be(2008);
             production[0].Show.Ids.Should().NotBeNull();
-            production[0].Show.Ids.Trakt.Should().Be(1);
+            production[0].Show.Ids.Trakt.Should().Be(1U);
             production[0].Show.Ids.Slug.Should().Be("breaking-bad");
-            production[0].Show.Ids.Tvdb.Should().Be(81189);
+            production[0].Show.Ids.Tvdb.Should().Be(81189U);
             production[0].Show.Ids.Imdb.Should().Be("tt0903747");
-            production[0].Show.Ids.Tmdb.Should().Be(1396);
-            production[0].Show.Ids.TvRage.Should().Be(18164);
+            production[0].Show.Ids.Tmdb.Should().Be(1396U);
+            production[0].Show.Ids.TvRage.Should().Be(18164U);
 
             response.Crew.Sound.Should().BeNull();
             response.Crew.VisualEffects.Should().BeNull();
@@ -579,24 +632,24 @@
             cast[0].Show.Title.Should().Be("Breaking Bad");
             cast[0].Show.Year.Should().Be(2008);
             cast[0].Show.Ids.Should().NotBeNull();
-            cast[0].Show.Ids.Trakt.Should().Be(1);
+            cast[0].Show.Ids.Trakt.Should().Be(1U);
             cast[0].Show.Ids.Slug.Should().Be("breaking-bad");
-            cast[0].Show.Ids.Tvdb.Should().Be(81189);
+            cast[0].Show.Ids.Tvdb.Should().Be(81189U);
             cast[0].Show.Ids.Imdb.Should().Be("tt0903747");
-            cast[0].Show.Ids.Tmdb.Should().Be(1396);
-            cast[0].Show.Ids.TvRage.Should().Be(18164);
+            cast[0].Show.Ids.Tmdb.Should().Be(1396U);
+            cast[0].Show.Ids.TvRage.Should().Be(18164U);
 
             cast[1].Character.Should().Be("Hal");
             cast[1].Show.Should().NotBeNull();
             cast[1].Show.Title.Should().Be("Malcolm in the Middle");
             cast[1].Show.Year.Should().Be(2000);
             cast[1].Show.Ids.Should().NotBeNull();
-            cast[1].Show.Ids.Trakt.Should().Be(1991);
+            cast[1].Show.Ids.Trakt.Should().Be(1991U);
             cast[1].Show.Ids.Slug.Should().Be("malcolm-in-the-middle");
-            cast[1].Show.Ids.Tvdb.Should().Be(73838);
+            cast[1].Show.Ids.Tvdb.Should().Be(73838U);
             cast[1].Show.Ids.Imdb.Should().Be("tt0212671");
-            cast[1].Show.Ids.Tmdb.Should().Be(2004);
-            cast[1].Show.Ids.TvRage.Should().NotHaveValue();
+            cast[1].Show.Ids.Tmdb.Should().Be(2004U);
+            cast[1].Show.Ids.TvRage.Should().BeNull();
 
             response.Crew.Should().NotBeNull();
             response.Crew.Art.Should().BeNull();
@@ -615,12 +668,12 @@
             production[0].Show.Title.Should().Be("Breaking Bad");
             production[0].Show.Year.Should().Be(2008);
             production[0].Show.Ids.Should().NotBeNull();
-            production[0].Show.Ids.Trakt.Should().Be(1);
+            production[0].Show.Ids.Trakt.Should().Be(1U);
             production[0].Show.Ids.Slug.Should().Be("breaking-bad");
-            production[0].Show.Ids.Tvdb.Should().Be(81189);
+            production[0].Show.Ids.Tvdb.Should().Be(81189U);
             production[0].Show.Ids.Imdb.Should().Be("tt0903747");
-            production[0].Show.Ids.Tmdb.Should().Be(1396);
-            production[0].Show.Ids.TvRage.Should().Be(18164);
+            production[0].Show.Ids.Tmdb.Should().Be(1396U);
+            production[0].Show.Ids.TvRage.Should().Be(18164U);
 
             response.Crew.Sound.Should().BeNull();
             response.Crew.VisualEffects.Should().BeNull();
@@ -640,6 +693,10 @@
             act.ShouldThrow<TraktPersonNotFoundException>();
 
             TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.Unauthorized);
+            act.ShouldThrow<TraktAuthorizationException>();
+
+            TestUtility.ClearMockHttpClient();
             TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.BadRequest);
             act.ShouldThrow<TraktBadRequestException>();
 
@@ -648,16 +705,32 @@
             act.ShouldThrow<TraktForbiddenException>();
 
             TestUtility.ClearMockHttpClient();
-            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)412);
-            act.ShouldThrow<TraktPreconditionFailedException>();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.MethodNotAllowed);
+            act.ShouldThrow<TraktMethodNotFoundException>();
 
             TestUtility.ClearMockHttpClient();
-            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)429);
-            act.ShouldThrow<TraktRateLimitException>();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.Conflict);
+            act.ShouldThrow<TraktConflictException>();
 
             TestUtility.ClearMockHttpClient();
             TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.InternalServerError);
             act.ShouldThrow<TraktServerException>();
+
+            TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, HttpStatusCode.BadGateway);
+            act.ShouldThrow<TraktBadGatewayException>();
+
+            TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)412);
+            act.ShouldThrow<TraktPreconditionFailedException>();
+
+            TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)422);
+            act.ShouldThrow<TraktValidationException>();
+
+            TestUtility.ClearMockHttpClient();
+            TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)429);
+            act.ShouldThrow<TraktRateLimitException>();
 
             TestUtility.ClearMockHttpClient();
             TestUtility.SetupMockResponseWithoutOAuth(uri, (HttpStatusCode)503);
@@ -695,6 +768,9 @@
             act.ShouldThrow<ArgumentException>();
 
             act = async () => await TestUtility.MOCK_TEST_CLIENT.People.GetPersonShowCreditsAsync(string.Empty);
+            act.ShouldThrow<ArgumentException>();
+
+            act = async () => await TestUtility.MOCK_TEST_CLIENT.People.GetPersonShowCreditsAsync("person id");
             act.ShouldThrow<ArgumentException>();
         }
 

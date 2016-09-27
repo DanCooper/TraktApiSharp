@@ -1,14 +1,14 @@
 ﻿namespace TraktApiSharp.Requests.WithoutOAuth.Shows
 {
     using Base.Get;
-    using Objects.Basic;
-    using Objects.Get.Shows;
+    using Objects.Get.Users;
+    using System.Collections.Generic;
 
-    internal class TraktShowWatchingUsersRequest : TraktGetByIdRequest<TraktListResult<TraktShowWatchingUser>, TraktShowWatchingUser>
+    internal class TraktShowWatchingUsersRequest : TraktGetByIdRequest<IEnumerable<TraktUser>, TraktUser>
     {
         internal TraktShowWatchingUsersRequest(TraktClient client) : base(client) { }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.NotRequired;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.NotRequired;
 
         protected override string UriTemplate => "shows/{id}/watching{?extended}";
 

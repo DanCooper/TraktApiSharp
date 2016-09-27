@@ -8,27 +8,25 @@
     {
         internal TraktSearchTextQueryRequest(TraktClient client) : base(client) { }
 
+        internal TraktSearchResultType ResultTypes { get; set; }
+
+        internal TraktSearchField SearchFields { get; set; }
+
         internal string Query { get; set; }
-
-        internal TraktSearchResultType? Type { get; set; }
-
-        internal int? Year { get; set; }
 
         protected override IDictionary<string, object> GetUriPathParameters()
         {
             var uriParams = base.GetUriPathParameters();
 
+            uriParams.Add("type", ResultTypes.UriName);
             uriParams.Add("query", Query);
 
-            if (Type.HasValue)
-                uriParams.Add("type", Type.Value.AsString());
-
-            if (Year.HasValue)
-                uriParams.Add("year", Year.Value.ToString());
+            if (SearchFields != null && SearchFields != TraktSearchField.Unspecified)
+                uriParams.Add("fields", SearchFields.UriName);
 
             return uriParams;
         }
 
-        protected override string UriTemplate => "search{?query,type,year,page,limit}";
+        protected override string UriTemplate => "search/{type}{?query,fields,years,genres,languages,countries,runtimes,ratings,extended,page,limit}";
     }
 }

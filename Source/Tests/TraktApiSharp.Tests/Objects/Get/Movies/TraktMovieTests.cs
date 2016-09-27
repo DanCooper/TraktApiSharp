@@ -16,7 +16,7 @@
             var movie = new TraktMovie();
 
             movie.Title.Should().BeNullOrEmpty();
-            movie.Year.Should().Be(0);
+            movie.Year.Should().NotHaveValue();
             movie.Ids.Should().BeNull();
             movie.Images.Should().BeNull();
             movie.Tagline.Should().BeNullOrEmpty();
@@ -25,9 +25,7 @@
             movie.Runtime.Should().NotHaveValue();
             movie.UpdatedAt.Should().NotHaveValue();
             movie.Trailer.Should().BeNullOrEmpty();
-            movie.TrailerUri.Should().BeNull();
             movie.Homepage.Should().BeNullOrEmpty();
-            movie.HomepageUri.Should().BeNull();
             movie.Rating.Should().NotHaveValue();
             movie.Votes.Should().NotHaveValue();
             movie.LanguageCode.Should().BeNullOrEmpty();
@@ -49,10 +47,10 @@
             movie.Title.Should().Be("Star Wars: The Force Awakens");
             movie.Year.Should().Be(2015);
             movie.Ids.Should().NotBeNull();
-            movie.Ids.Trakt.Should().Be(94024);
+            movie.Ids.Trakt.Should().Be(94024U);
             movie.Ids.Slug.Should().Be("star-wars-the-force-awakens-2015");
             movie.Ids.Imdb.Should().Be("tt2488496");
-            movie.Ids.Tmdb.Should().Be(140607);
+            movie.Ids.Tmdb.Should().Be(140607U);
             movie.Images.Should().BeNull();
             movie.Tagline.Should().BeNullOrEmpty();
             movie.Overview.Should().BeNullOrEmpty();
@@ -60,9 +58,7 @@
             movie.Runtime.Should().NotHaveValue();
             movie.UpdatedAt.Should().NotHaveValue();
             movie.Trailer.Should().BeNullOrEmpty();
-            movie.TrailerUri.Should().BeNull();
             movie.Homepage.Should().BeNullOrEmpty();
-            movie.HomepageUri.Should().BeNull();
             movie.Rating.Should().NotHaveValue();
             movie.Votes.Should().NotHaveValue();
             movie.LanguageCode.Should().BeNullOrEmpty();
@@ -84,10 +80,10 @@
             movie.Title.Should().Be("Star Wars: The Force Awakens");
             movie.Year.Should().Be(2015);
             movie.Ids.Should().NotBeNull();
-            movie.Ids.Trakt.Should().Be(94024);
+            movie.Ids.Trakt.Should().Be(94024U);
             movie.Ids.Slug.Should().Be("star-wars-the-force-awakens-2015");
             movie.Ids.Imdb.Should().Be("tt2488496");
-            movie.Ids.Tmdb.Should().Be(140607);
+            movie.Ids.Tmdb.Should().Be(140607U);
             movie.Images.Should().NotBeNull();
             movie.Images.FanArt.Full.Should().Be("https://walter.trakt.us/images/movies/000/094/024/fanarts/original/707a0ae2ab.jpg");
             movie.Images.FanArt.Medium.Should().Be("https://walter.trakt.us/images/movies/000/094/024/fanarts/medium/707a0ae2ab.jpg");
@@ -105,9 +101,7 @@
             movie.Runtime.Should().NotHaveValue();
             movie.UpdatedAt.Should().NotHaveValue();
             movie.Trailer.Should().BeNullOrEmpty();
-            movie.TrailerUri.Should().BeNull();
             movie.Homepage.Should().BeNullOrEmpty();
-            movie.HomepageUri.Should().BeNull();
             movie.Rating.Should().NotHaveValue();
             movie.Votes.Should().NotHaveValue();
             movie.LanguageCode.Should().BeNullOrEmpty();
@@ -129,10 +123,10 @@
             movie.Title.Should().Be("Star Wars: The Force Awakens");
             movie.Year.Should().Be(2015);
             movie.Ids.Should().NotBeNull();
-            movie.Ids.Trakt.Should().Be(94024);
+            movie.Ids.Trakt.Should().Be(94024U);
             movie.Ids.Slug.Should().Be("star-wars-the-force-awakens-2015");
             movie.Ids.Imdb.Should().Be("tt2488496");
-            movie.Ids.Tmdb.Should().Be(140607);
+            movie.Ids.Tmdb.Should().Be(140607U);
             movie.Images.Should().BeNull();
             movie.Tagline.Should().Be("Every generation has a story.");
             movie.Overview.Should().Be("Thirty years after defeating the Galactic Empire, Han Solo and his allies face a new threat from the evil Kylo Ren and his army of Stormtroopers.");
@@ -140,9 +134,7 @@
             movie.Runtime.Should().Be(136);
             movie.UpdatedAt.Should().Be(DateTime.Parse("2016-03-31T09:01:59Z").ToUniversalTime());
             movie.Trailer.Should().Be("http://youtube.com/watch?v=uwa7N0ShN2U");
-            movie.TrailerUri.Should().NotBeNull();
             movie.Homepage.Should().Be("http://www.starwars.com/films/star-wars-episode-vii");
-            movie.HomepageUri.Should().NotBeNull();
             movie.Rating.Should().Be(8.31988f);
             movie.Votes.Should().Be(9338);
             movie.LanguageCode.Should().Be("en");
@@ -164,10 +156,10 @@
             movie.Title.Should().Be("Star Wars: The Force Awakens");
             movie.Year.Should().Be(2015);
             movie.Ids.Should().NotBeNull();
-            movie.Ids.Trakt.Should().Be(94024);
+            movie.Ids.Trakt.Should().Be(94024U);
             movie.Ids.Slug.Should().Be("star-wars-the-force-awakens-2015");
             movie.Ids.Imdb.Should().Be("tt2488496");
-            movie.Ids.Tmdb.Should().Be(140607);
+            movie.Ids.Tmdb.Should().Be(140607U);
             movie.Images.Should().NotBeNull();
             movie.Images.FanArt.Full.Should().Be("https://walter.trakt.us/images/movies/000/094/024/fanarts/original/707a0ae2ab.jpg");
             movie.Images.FanArt.Medium.Should().Be("https://walter.trakt.us/images/movies/000/094/024/fanarts/medium/707a0ae2ab.jpg");
@@ -185,9 +177,7 @@
             movie.Runtime.Should().Be(136);
             movie.UpdatedAt.Should().Be(DateTime.Parse("2016-03-31T09:01:59Z").ToUniversalTime());
             movie.Trailer.Should().Be("http://youtube.com/watch?v=uwa7N0ShN2U");
-            movie.TrailerUri.Should().NotBeNull();
             movie.Homepage.Should().Be("http://www.starwars.com/films/star-wars-episode-vii");
-            movie.HomepageUri.Should().NotBeNull();
             movie.Rating.Should().Be(8.31988f);
             movie.Votes.Should().Be(9338);
             movie.LanguageCode.Should().Be("en");

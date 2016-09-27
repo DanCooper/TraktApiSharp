@@ -3,14 +3,15 @@
     using Core;
     using Exceptions;
     using Extensions;
-    using Newtonsoft.Json;
     using System;
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
     using System.Threading.Tasks;
+    using Utils;
 
+    /// <summary>Provides access to Device authentication methods, such as creating a new device and polling for an access token.</summary>
     public class TraktDeviceAuth
     {
         internal TraktDeviceAuth(TraktClient client)
@@ -18,17 +19,45 @@
             Client = client;
         }
 
+        /// <summary>Gets a reference to the associated <see cref="TraktClient" /> instance.</summary>
         public TraktClient Client { get; private set; }
 
+        /// <summary>
+        /// Generates a new Trakt device and starts the device authentication process. Uses the current <see cref="TraktAuthentication.ClientId" /> for the request.
+        /// Assigns the returned <see cref="TraktDevice" /> instance to <see cref="TraktAuthentication.Device" />, if successful.
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/authentication-devices/device-code/generate-new-device-codes">"Trakt API Doc - Devices: Device Code"</a> for more information.
+        /// </para>
+        /// <para>
+        /// See also <seealso cref="GenerateDeviceAsync(string)" />.
+        /// </para>
+        /// </summary>
+        /// <returns>A new <see cref="TraktDevice" /> instance, which contains a new device code, user code and a verification URL.</returns>
+        /// <exception cref="ArgumentException">Thrown, if the current client id is null, empty or contains spaces.</exception>
+        /// <exception cref="TraktException">Thrown, if the request fails.</exception>
         public async Task<TraktDevice> GenerateDeviceAsync()
         {
             return await GenerateDeviceAsync(Client.ClientId);
         }
 
+        /// <summary>
+        /// Generates a new Trakt device and starts the device authentication process.
+        /// Assigns the returned <see cref="TraktDevice" /> instance to <see cref="TraktAuthentication.Device" />, if successful.
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/authentication-devices/device-code/generate-new-device-codes">"Trakt API Doc - Devices: Device Code"</a> for more information.
+        /// </para>
+        /// <para>
+        /// See also <seealso cref="GenerateDeviceAsync(string)" />.
+        /// </para>
+        /// </summary>
+        /// <param name="clientId">The Trakt Client ID, which will be used for the request. See also <seealso cref="TraktAuthentication.ClientId" />.</param>
+        /// <returns>A new <see cref="TraktDevice" /> instance, which contains a new device code, user code and a verification URL.</returns>
+        /// <exception cref="ArgumentException">Thrown, if the given client id is null, empty or contains spaces.</exception>
+        /// <exception cref="TraktException">Thrown, if the request fails.</exception>
         public async Task<TraktDevice> GenerateDeviceAsync(string clientId)
         {
             if (string.IsNullOrEmpty(clientId) || clientId.ContainsSpace())
-                throw new ArgumentException("client id not valid", "clientId");
+                throw new ArgumentException("client id not valid", nameof(clientId));
 
             var postContent = $"{{ \"client_id\": \"{clientId}\" }}";
 
@@ -42,7 +71,7 @@
             var tokenUrl = $"{Client.Configuration.BaseUrl}{TraktConstants.OAuthDeviceCodeUri}";
             var content = new StringContent(postContent, Encoding.UTF8, "application/json");
 
-            var response = await httpClient.PostAsync(tokenUrl, content);
+            var response = await httpClient.PostAsync(tokenUrl, content).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
                 await ErrorHandling(response, tokenUrl, postContent, true);
@@ -52,28 +81,137 @@
             var device = default(TraktDevice);
 
             if (!string.IsNullOrEmpty(responseContent))
-                device = await Task.Run(() => JsonConvert.DeserializeObject<TraktDevice>(responseContent));
+                device = Json.Deserialize<TraktDevice>(responseContent);
 
             Client.Authentication.Device = device;
             return device;
         }
 
-        public async Task<TraktAccessToken> PollForAccessTokenAsync()
+        /// <summary>
+        /// Polls for a new access token. Uses the current <see cref="TraktAuthentication.Device" />, <see cref="TraktAuthentication.ClientId" /> and <see cref="TraktAuthentication.ClientSecret" /> for the request.
+        /// Assigns the returned <see cref="TraktAuthorization" /> instance to <see cref="TraktAuthentication.Authorization" />, if successful.
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/authentication-devices/get-token/poll-for-the-access_token">"Trakt API Doc - Devices: Get Token"</a> for more information.
+        /// </para>
+        /// <para>
+        /// See also <seealso cref="PollForAuthorizationAsync(TraktDevice)" />,
+        /// <seealso cref="PollForAuthorizationAsync(TraktDevice, string)"/>
+        /// <seealso cref="PollForAuthorizationAsync(TraktDevice, string, string)" />.
+        /// See also <seealso cref="TraktAuthentication.Authorization" />.
+        /// </para>
+        /// </summary>
+        /// <returns>A new <see cref="TraktAuthorization" /> instance, which contains a new access and refresh token.</returns>
+        /// <exception cref="TraktAuthenticationDeviceException">
+        /// Thrown, if the current device has an invalid device code.
+        /// Thrown, if the user code of the current device was already approved by the user.
+        /// Thrown, if the current device code is already expired unused.
+        /// Thrown, if the user explicitly denied the user code of the current device.
+        /// </exception>
+        /// <exception cref="TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown, if the current device is null, or already expired unused or invalid or its user code contains spaces.
+        /// Thrown, if the current client id is null, empty or contains spaces.
+        /// Thrown, if the current client secret is null, empty or contains spaces.
+        /// </exception>
+        public async Task<TraktAuthorization> PollForAuthorizationAsync()
         {
-            return await PollForAccessTokenAsync(Client.Authentication.Device, Client.ClientId, Client.ClientSecret);
+            return await PollForAuthorizationAsync(Client.Authentication.Device, Client.ClientId, Client.ClientSecret);
         }
 
-        public async Task<TraktAccessToken> PollForAccessTokenAsync(TraktDevice device)
+        /// <summary>
+        /// Polls for a new access token. Uses the current <see cref="TraktAuthentication.ClientSecret" /> and <see cref="TraktAuthentication.ClientId" /> for the request.
+        /// Assigns the returned <see cref="TraktAuthorization" /> instance to <see cref="TraktAuthentication.Authorization" />, if successful.
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/authentication-devices/get-token/poll-for-the-access_token">"Trakt API Doc - Devices: Get Token"</a> for more information.
+        /// </para>
+        /// <para>
+        /// See also <seealso cref="PollForAuthorizationAsync()" />,
+        /// <seealso cref="PollForAuthorizationAsync(TraktDevice, string)" /> and
+        /// <seealso cref="PollForAuthorizationAsync(TraktDevice, string, string)" />.
+        /// See also <seealso cref="TraktAuthentication.Authorization" />.
+        /// </para>
+        /// </summary>
+        /// <param name="device">The <see cref="TraktDevice" />, which will be used for the request. See also <seealso cref="TraktAuthentication.Device "/>.</param>
+        /// <returns>A new <see cref="TraktAuthorization" /> instance, which contains a new access and refresh token.</returns>
+        /// <exception cref="TraktAuthenticationDeviceException">
+        /// Thrown, if the given device has an invalid device code.
+        /// Thrown, if the user code of the given device was already approved by the user.
+        /// Thrown, if the given device code is already expired unused.
+        /// Thrown, if the user explicitly denied the user code of the given device.
+        /// </exception>
+        /// <exception cref="TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown, if the given device is null, or already expired unused or invalid or its user code contains spaces.
+        /// Thrown, if the current client id is null, empty or contains spaces.
+        /// Thrown, if the current client secret is null, empty or contains spaces.
+        /// </exception>
+        public async Task<TraktAuthorization> PollForAuthorizationAsync(TraktDevice device)
         {
-            return await PollForAccessTokenAsync(device, Client.ClientId, Client.ClientSecret);
+            return await PollForAuthorizationAsync(device, Client.ClientId, Client.ClientSecret);
         }
 
-        public async Task<TraktAccessToken> PollForAccessTokenAsync(TraktDevice device, string clientId)
+        /// <summary>
+        /// Polls for a new access token. Uses the current <see cref="TraktAuthentication.ClientSecret" /> for the request.
+        /// Assigns the returned <see cref="TraktAuthorization" /> instance to <see cref="TraktAuthentication.Authorization" />, if successful.
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/authentication-devices/get-token/poll-for-the-access_token">"Trakt API Doc - Devices: Get Token"</a> for more information.
+        /// </para>
+        /// <para>
+        /// See also <seealso cref="PollForAuthorizationAsync()" />,
+        /// <seealso cref="PollForAuthorizationAsync(TraktDevice)" /> and
+        /// <seealso cref="PollForAuthorizationAsync(TraktDevice, string, string)" />.
+        /// See also <seealso cref="TraktAuthentication.Authorization" />.
+        /// </para>
+        /// </summary>
+        /// <param name="device">The <see cref="TraktDevice" />, which will be used for the request. See also <seealso cref="TraktAuthentication.Device "/>.</param>
+        /// <param name="clientId">The Trakt Client ID, which will be used for the request. See also <seealso cref="TraktAuthentication.ClientId" />.</param>
+        /// <returns>A new <see cref="TraktAuthorization" /> instance, which contains a new access and refresh token.</returns>
+        /// <exception cref="TraktAuthenticationDeviceException">
+        /// Thrown, if the given device has an invalid device code.
+        /// Thrown, if the user code of the given device was already approved by the user.
+        /// Thrown, if the given device code is already expired unused.
+        /// Thrown, if the user explicitly denied the user code of the given device.
+        /// </exception>
+        /// <exception cref="TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown, if the given device is null, or already expired unused or invalid or its user code contains spaces.
+        /// Thrown, if the given client id is null, empty or contains spaces.
+        /// Thrown, if the current client secret is null, empty or contains spaces.
+        /// </exception>
+        public async Task<TraktAuthorization> PollForAuthorizationAsync(TraktDevice device, string clientId)
         {
-            return await PollForAccessTokenAsync(device, clientId, Client.ClientSecret);
+            return await PollForAuthorizationAsync(device, clientId, Client.ClientSecret);
         }
 
-        public async Task<TraktAccessToken> PollForAccessTokenAsync(TraktDevice device, string clientId, string clientSecret)
+        /// <summary>
+        /// Polls for a new access token. Assigns the returned <see cref="TraktAuthorization" /> instance to <see cref="TraktAuthentication.Authorization" />, if successful.
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/authentication-devices/get-token/poll-for-the-access_token">"Trakt API Doc - Devices: Get Token"</a> for more information.
+        /// </para>
+        /// <para>
+        /// See also <seealso cref="PollForAuthorizationAsync()" />,
+        /// <seealso cref="PollForAuthorizationAsync(TraktDevice)" /> and
+        /// <seealso cref="PollForAuthorizationAsync(TraktDevice, string)" />.
+        /// See also <seealso cref="TraktAuthentication.Authorization" />.
+        /// </para>
+        /// </summary>
+        /// <param name="device">The <see cref="TraktDevice" />, which will be used for the request. See also <seealso cref="TraktAuthentication.Device "/>.</param>
+        /// <param name="clientId">The Trakt Client ID, which will be used for the request. See also <seealso cref="TraktAuthentication.ClientId" />.</param>
+        /// <param name="clientSecret">The Trakt Client Secret, which will be used for the request. See also <seealso cref="TraktAuthentication.ClientSecret" />.</param>
+        /// <returns>A new <see cref="TraktAuthorization" /> instance, which contains a new access and refresh token.</returns>
+        /// <exception cref="TraktAuthenticationDeviceException">
+        /// Thrown, if the given device has an invalid device code.
+        /// Thrown, if the user code of the given device was already approved by the user.
+        /// Thrown, if the given device code is already expired unused.
+        /// Thrown, if the user explicitly denied the user code of the given device.
+        /// </exception>
+        /// <exception cref="TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown, if the given device is null, or already expired unused or invalid or its user code contains spaces.
+        /// Thrown, if the given client id is null, empty or contains spaces.
+        /// Thrown, if the given client secret is null, empty or contains spaces.
+        /// </exception>
+        public async Task<TraktAuthorization> PollForAuthorizationAsync(TraktDevice device, string clientId, string clientSecret)
         {
             ValidateAccessTokenInput(device, clientId, clientSecret);
 
@@ -95,8 +233,8 @@
 
             while (totalExpiredSeconds < device.ExpiresInSeconds)
             {
-                var content = new StringContent(postContent);
-                var response = await httpClient.PostAsync(tokenUrl, content);
+                var content = new StringContent(postContent, Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync(tokenUrl, content).ConfigureAwait(false);
 
                 responseCode = response.StatusCode;
                 reasonPhrase = response.ReasonPhrase;
@@ -104,12 +242,12 @@
 
                 if (responseCode == HttpStatusCode.OK) // Success
                 {
-                    var token = default(TraktAccessToken);
+                    var token = default(TraktAuthorization);
 
                     if (!string.IsNullOrEmpty(responseContent))
-                        token = await Task.Run(() => JsonConvert.DeserializeObject<TraktAccessToken>(responseContent));
+                        token = Json.Deserialize<TraktAuthorization>(responseContent);
 
-                    Client.Authentication.AccessToken = token;
+                    Client.Authentication.Authorization = token;
                     return token;
                 }
                 else if (responseCode == HttpStatusCode.BadRequest) // Pending
@@ -170,44 +308,262 @@
             throw new TraktAuthenticationDeviceException("unknown exception") { ServerReasonPhrase = reasonPhrase };
         }
 
-        public async Task<TraktAccessToken> RefreshAccessTokenAsync()
+        /// <summary>
+        /// Exchanges the current refresh token for a new access token, without re-authenticating the associated user.
+        /// Uses the current <see cref="TraktAuthentication.Authorization" />'s refresh token, <see cref="TraktAuthentication.ClientId" />,
+        /// <see cref="TraktAuthentication.ClientSecret" /> and <see cref="TraktAuthentication.RedirectUri" />for the request.
+        /// Assigns the returned <see cref="TraktAuthorization" /> instance to <see cref="TraktAuthentication.Authorization" />, if successful.
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/authentication-oauth/get-token/exchange-refresh_token-for-access_token">"Trakt API Doc - OAuth: Get Token"</a> for more information.
+        /// </para>
+        /// <para>
+        /// See also <seealso cref="RefreshAuthorizationAsync(string)" />,
+        /// <seealso cref="RefreshAuthorizationAsync(string, string)" />, 
+        /// <seealso cref="RefreshAuthorizationAsync(string, string, string)" /> and
+        /// <seealso cref="RefreshAuthorizationAsync(string, string, string, string)" />.
+        /// See also <seealso cref="TraktAuthentication.Authorization" />.
+        /// </para>
+        /// </summary>
+        /// <returns>A new <see cref="TraktAuthorization" /> instance, which contains a new access and refresh token.</returns>
+        /// <exception cref="TraktAuthorizationException">
+        /// Thrown, if the current <see cref="TraktClient" /> instance is not authorized and the current refresh token is null,
+        /// empty or contains spaces.
+        /// </exception>
+        /// <exception cref="TraktAuthenticationException">Thrown, if the current refresh token is invalid.</exception>
+        /// <exception cref="TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown, if the current refresh token is null, empty or contains spaces.
+        /// Thrown, if the current client id is null, empty of contains spaces.
+        /// Thrown, if the current client secret is null, empty or contains spaces.
+        /// Thrown, if the current rediret URI is null, empty or contains spaces.
+        /// </exception>
+        public async Task<TraktAuthorization> RefreshAuthorizationAsync()
         {
-            return await Client.Authentication.RefreshAccessTokenAsync();
+            return await Client.Authentication.RefreshAuthorizationAsync();
         }
 
-        public async Task<TraktAccessToken> RefreshAccessTokenAsync(string refreshToken)
+        /// <summary>
+        /// Exchanges the current refresh token for a new access token, without re-authenticating the associated user.
+        /// Uses the current <see cref="TraktAuthentication.ClientId" />, <see cref="TraktAuthentication.ClientSecret" /> and <see cref="TraktAuthentication.RedirectUri" />for the request.
+        /// Assigns the returned <see cref="TraktAuthorization" /> instance to <see cref="TraktAuthentication.Authorization" />, if successful.
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/authentication-oauth/get-token/exchange-refresh_token-for-access_token">"Trakt API Doc - OAuth: Get Token"</a> for more information.
+        /// </para>
+        /// <para>
+        /// See also <seealso cref="RefreshAuthorizationAsync()" />,
+        /// <seealso cref="RefreshAuthorizationAsync(string, string)" />,
+        /// <seealso cref="RefreshAuthorizationAsync(string, string, string)" /> and
+        /// <seealso cref="RefreshAuthorizationAsync(string, string, string, string)" />.
+        /// See also <seealso cref="TraktAuthentication.Authorization" />.
+        /// </para>
+        /// </summary>
+        /// <param name="refreshToken">The refresh token, which will be used for the exchange.</param>
+        /// <returns>A new <see cref="TraktAuthorization" /> instance, which contains a new access and refresh token.</returns>
+        /// <exception cref="TraktAuthorizationException">
+        /// Thrown, if the current <see cref="TraktClient" /> instance is not authorized and the given refresh token is null,
+        /// empty or contains spaces.
+        /// </exception>
+        /// <exception cref="TraktAuthenticationException">Thrown, if the given refresh token is invalid.</exception>
+        /// <exception cref="TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown, if the given refresh token is null, empty or contains spaces.
+        /// Thrown, if the current client id is null, empty of contains spaces.
+        /// Thrown, if the current client secret is null, empty or contains spaces.
+        /// Thrown, if the current rediret URI is null, empty or contains spaces.
+        /// </exception>
+        public async Task<TraktAuthorization> RefreshAuthorizationAsync(string refreshToken)
         {
-            return await Client.Authentication.RefreshAccessTokenAsync(refreshToken);
+            return await Client.Authentication.RefreshAuthorizationAsync(refreshToken);
         }
 
-        public async Task<TraktAccessToken> RefreshAccessTokenAsync(string refreshToken, string clientId)
+        /// <summary>
+        /// Exchanges the current refresh token for a new access token, without re-authenticating the associated user.
+        /// Uses the current <see cref="TraktAuthentication.ClientSecret" /> and <see cref="TraktAuthentication.RedirectUri" />for the request.
+        /// Assigns the returned <see cref="TraktAuthorization" /> instance to <see cref="TraktAuthentication.Authorization" />, if successful.
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/authentication-oauth/get-token/exchange-refresh_token-for-access_token">"Trakt API Doc - OAuth: Get Token"</a> for more information.
+        /// </para>
+        /// <para>
+        /// See also <seealso cref="RefreshAuthorizationAsync()" />,
+        /// <seealso cref="RefreshAuthorizationAsync(string)" />,
+        /// <seealso cref="RefreshAuthorizationAsync(string, string, string)" /> and
+        /// <seealso cref="RefreshAuthorizationAsync(string, string, string, string)" />.
+        /// See also <seealso cref="TraktAuthentication.Authorization" />.
+        /// </para>
+        /// </summary>
+        /// <param name="refreshToken">The refresh token, which will be used for the exchange.</param>
+        /// <param name="clientId">The Trakt Client ID, which will be used for the request. See also <seealso cref="TraktAuthentication.ClientId" />.</param>
+        /// <returns>A new <see cref="TraktAuthorization" /> instance, which contains a new access and refresh token.</returns>
+        /// <exception cref="TraktAuthorizationException">
+        /// Thrown, if the current <see cref="TraktClient" /> instance is not authorized and the given refresh token is null,
+        /// empty or contains spaces.
+        /// </exception>
+        /// <exception cref="TraktAuthenticationException">Thrown, if the given refresh token is invalid.</exception>
+        /// <exception cref="TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown, if the given refresh token is null, empty or contains spaces.
+        /// Thrown, if the given client id is null, empty of contains spaces.
+        /// Thrown, if the current client secret is null, empty or contains spaces.
+        /// Thrown, if the current rediret URI is null, empty or contains spaces.
+        /// </exception>
+        public async Task<TraktAuthorization> RefreshAuthorizationAsync(string refreshToken, string clientId)
         {
-            return await Client.Authentication.RefreshAccessTokenAsync(refreshToken, clientId);
+            return await Client.Authentication.RefreshAuthorizationAsync(refreshToken, clientId);
         }
 
-        public async Task<TraktAccessToken> RefreshAccessTokenAsync(string refreshToken, string clientId, string clientSecret)
+        /// <summary>
+        /// Exchanges the current refresh token for a new access token, without re-authenticating the associated user.
+        /// Uses the current <see cref="TraktAuthentication.ClientSecret" /> and <see cref="TraktAuthentication.RedirectUri" />for the request.
+        /// Assigns the returned <see cref="TraktAuthorization" /> instance to <see cref="TraktAuthentication.Authorization" />, if successful.
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/authentication-oauth/get-token/exchange-refresh_token-for-access_token">"Trakt API Doc - OAuth: Get Token"</a> for more information.
+        /// </para>
+        /// <para>
+        /// See also <seealso cref="RefreshAuthorizationAsync()" />,
+        /// <seealso cref="RefreshAuthorizationAsync(string)" />,
+        /// <seealso cref="RefreshAuthorizationAsync(string, string)" /> and
+        /// <seealso cref="RefreshAuthorizationAsync(string, string, string, string)" />.
+        /// See also <seealso cref="TraktAuthentication.Authorization" />.
+        /// </para>
+        /// </summary>
+        /// <param name="refreshToken">The refresh token, which will be used for the exchange.</param>
+        /// <param name="clientId">The Trakt Client ID, which will be used for the request. See also <seealso cref="TraktAuthentication.ClientId" />.</param>
+        /// <param name="clientSecret">The Trakt Client Secret, which will be used for the request. See also <seealso cref="TraktAuthentication.ClientSecret" />.</param>
+        /// <returns>A new <see cref="TraktAuthorization" /> instance, which contains a new access and refresh token.</returns>
+        /// <exception cref="TraktAuthorizationException">
+        /// Thrown, if the current <see cref="TraktClient" /> instance is not authorized and the given refresh token is null,
+        /// empty or contains spaces.
+        /// </exception>
+        /// <exception cref="TraktAuthenticationException">Thrown, if the given refresh token is invalid.</exception>
+        /// <exception cref="TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown, if the given refresh token is null, empty or contains spaces.
+        /// Thrown, if the given client id is null, empty of contains spaces.
+        /// Thrown, if the given client secret is null, empty or contains spaces.
+        /// Thrown, if the current rediret URI is null, empty or contains spaces.
+        /// </exception>
+        public async Task<TraktAuthorization> RefreshAuthorizationAsync(string refreshToken, string clientId, string clientSecret)
         {
-            return await Client.Authentication.RefreshAccessTokenAsync(refreshToken, clientId, clientSecret);
+            return await Client.Authentication.RefreshAuthorizationAsync(refreshToken, clientId, clientSecret);
         }
 
-        public async Task<TraktAccessToken> RefreshAccessTokenAsync(string refreshToken, string clientId, string clientSecret, string redirectUri)
+        /// <summary>
+        /// Exchanges the current refresh token for a new access token, without re-authenticating the associated user.
+        /// Assigns the returned <see cref="TraktAuthorization" /> instance to <see cref="TraktAuthentication.Authorization" />, if successful.
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/authentication-oauth/get-token/exchange-refresh_token-for-access_token">"Trakt API Doc - OAuth: Get Token"</a> for more information.
+        /// </para>
+        /// <para>
+        /// See also <seealso cref="RefreshAuthorizationAsync()" />,
+        /// <seealso cref="RefreshAuthorizationAsync(string)" />,
+        /// <seealso cref="RefreshAuthorizationAsync(string, string)" /> and
+        /// <seealso cref="RefreshAuthorizationAsync(string, string, string)" />.
+        /// See also <seealso cref="TraktAuthentication.Authorization" />.
+        /// </para>
+        /// </summary>
+        /// <param name="refreshToken">The refresh token, which will be used for the exchange.</param>
+        /// <param name="clientId">The Trakt Client ID, which will be used for the request. See also <seealso cref="TraktAuthentication.ClientId" />.</param>
+        /// <param name="clientSecret">The Trakt Client Secret, which will be used for the request. See also <seealso cref="TraktAuthentication.ClientSecret" />.</param>
+        /// <param name="redirectUri">The redirect URI, which will be used for the request. See also <seealso cref="TraktAuthentication.RedirectUri" />.</param>
+        /// <returns>A new <see cref="TraktAuthorization" /> instance, which contains a new access and refresh token.</returns>
+        /// <exception cref="TraktAuthorizationException">
+        /// Thrown, if the current <see cref="TraktClient" /> instance is not authorized and the given refresh token is null,
+        /// empty or contains spaces.
+        /// </exception>
+        /// <exception cref="TraktAuthenticationException">Thrown, if the given refresh token is invalid.</exception>
+        /// <exception cref="TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown, if the given refresh token is null, empty or contains spaces.
+        /// Thrown, if the given client id is null, empty of contains spaces.
+        /// Thrown, if the given client secret is null, empty or contains spaces.
+        /// Thrown, if the given rediret URI is null, empty or contains spaces.
+        /// </exception>
+        public async Task<TraktAuthorization> RefreshAuthorizationAsync(string refreshToken, string clientId, string clientSecret, string redirectUri)
         {
-            return await Client.Authentication.RefreshAccessTokenAsync(refreshToken, clientId, clientSecret, redirectUri);
+            return await Client.Authentication.RefreshAuthorizationAsync(refreshToken, clientId, clientSecret, redirectUri);
         }
 
-        public async Task RevokeAccessTokenAsync()
+        /// <summary>
+        /// Revokes the current access token. If, successful, the current access token will be invalid
+        /// and the user has to be re-authenticated.
+        /// Uses the current <see cref="TraktAuthentication.Authorization" />'s access token and <see cref="TraktAuthentication.ClientId" />.
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/authentication-oauth/get-token/revoke-an-access_token">"Trakt API Doc - OAuth: Revoke Token"</a> for more information.
+        /// </para>
+        /// <para>
+        /// See also <seealso cref="RevokeAuthorizationAsync(string)" />, <seealso cref="RevokeAuthorizationAsync(string, string)" />.
+        /// See also <seealso cref="TraktAuthentication.Authorization" />.
+        /// </para>
+        /// </summary>
+        /// <exception cref="TraktAuthorizationException">
+        /// Thrown, if the current <see cref="TraktClient" /> instance is not authorized and the current access token is null,
+        /// empty or contains spaces.
+        /// </exception>
+        /// <exception cref="TraktAuthenticationException">Thrown, if revoking the current access token fails with unknown error.</exception>
+        /// <exception cref="TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown, if the current access token is null, empty or contains spaces.
+        /// Thrown, if the current client id is null, empty or contains spaces.
+        /// </exception>
+        public async Task RevokeAuthorizationAsync()
         {
-            await Client.Authentication.RevokeAccessTokenAsync();
+            await Client.Authentication.RevokeAuthorizationAsync();
         }
 
-        public async Task RevokeAccessTokenAsync(string accessToken)
+        /// <summary>
+        /// Revokes the given access token. If, successful, the given access token will be invalid
+        /// and the user has to be re-authenticated.
+        /// Uses the current <see cref="TraktAuthentication.ClientId" />.
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/authentication-oauth/get-token/revoke-an-access_token">"Trakt API Doc - OAuth: Revoke Token"</a> for more information.
+        /// </para>
+        /// <para>
+        /// See also <seealso cref="RevokeAuthorizationAsync()" />, <seealso cref="RevokeAuthorizationAsync(string, string)" />.
+        /// See also <seealso cref="TraktAuthentication.Authorization" />.
+        /// </para>
+        /// </summary>
+        /// <param name="accessToken">The given access token, which will be revoked. See also <seealso cref="TraktAuthorization.AccessToken" />.</param>
+        /// <exception cref="TraktAuthorizationException">
+        /// Thrown, if the current <see cref="TraktClient" /> instance is not authorized and the given access token is null,
+        /// empty or contains spaces.
+        /// </exception>
+        /// <exception cref="TraktAuthenticationException">Thrown, if revoking the given access token fails with unknown error.</exception>
+        /// <exception cref="TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown, if the given access token is null, empty or contains spaces.
+        /// Thrown, if the current client id is null, empty or contains spaces.
+        /// </exception>
+        public async Task RevokeAuthorizationAsync(string accessToken)
         {
-            await Client.Authentication.RevokeAccessTokenAsync(accessToken);
+            await Client.Authentication.RevokeAuthorizationAsync(accessToken);
         }
 
-        public async Task RevokeAccessTokenAsync(string accessToken, string clientId)
+        /// <summary>
+        /// Revokes the given access token. If, successful, the given access token will be invalid
+        /// and the user has to be re-authenticated.
+        /// <para>
+        /// See <a href="http://docs.trakt.apiary.io/#reference/authentication-oauth/get-token/revoke-an-access_token">"Trakt API Doc - OAuth: Revoke Token"</a> for more information.
+        /// </para>
+        /// <para>
+        /// See also <seealso cref="RevokeAuthorizationAsync()" />, <seealso cref="RevokeAuthorizationAsync(string)" />.
+        /// See also <seealso cref="TraktAuthentication.Authorization" />.
+        /// </para>
+        /// </summary>
+        /// <param name="accessToken">The access token, which will be revoked. See also <seealso cref="TraktAuthorization.AccessToken" />.</param>
+        /// <param name="clientId">The Trakt Client ID, which will be used for the request. See also <seealso cref="TraktAuthentication.ClientId" />.</param>
+        /// <exception cref="TraktAuthorizationException">
+        /// Thrown, if the current <see cref="TraktClient" /> instance is not authorized and the given access token is null,
+        /// empty or contains spaces.
+        /// </exception>
+        /// <exception cref="TraktAuthenticationException">Thrown, if revoking the given access token fails with unknown error.</exception>
+        /// <exception cref="TraktException">Thrown, if the request fails.</exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown, if the given access token is null, empty or contains spaces.
+        /// Thrown, if the given client id is null, empty or contains spaces.
+        /// </exception>
+        public async Task RevokeAuthorizationAsync(string accessToken, string clientId)
         {
-            await Client.Authentication.RevokeAccessTokenAsync(accessToken, clientId);
+            await Client.Authentication.RevokeAuthorizationAsync(accessToken, clientId);
         }
 
         private void SetDefaultRequestHeaders(HttpClient httpClient)
@@ -221,22 +577,22 @@
         private void ValidateAccessTokenInput(TraktDevice device, string clientId, string clientSecret)
         {
             if (device == null)
-                throw new ArgumentNullException("device must not be null", "device");
+                throw new ArgumentNullException(nameof(device), "device must not be null");
 
             if (device.IsExpiredUnused)
-                throw new ArgumentException("device code expired unused", "device");
+                throw new ArgumentException("device code expired unused", nameof(device));
 
             if (!device.IsValid)
-                throw new ArgumentException("device not valid", "device");
+                throw new ArgumentException("device not valid", nameof(device));
 
             if (device.DeviceCode.ContainsSpace())
-                throw new ArgumentException("device code not valid", "device");
+                throw new ArgumentException("device code not valid", nameof(device.DeviceCode));
 
             if (string.IsNullOrEmpty(clientId) || clientId.ContainsSpace())
-                throw new ArgumentException("client id not valid", "clientId");
+                throw new ArgumentException("client id not valid", nameof(clientId));
 
             if (string.IsNullOrEmpty(clientSecret) || clientSecret.ContainsSpace())
-                throw new ArgumentException("client secret not valid", "clientSecret");
+                throw new ArgumentException("client secret not valid", nameof(clientSecret));
         }
 
         private async Task ErrorHandling(HttpResponseMessage response, string requestUrl, string requestContent, bool handleAdditionalCodes)

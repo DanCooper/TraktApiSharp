@@ -10,25 +10,25 @@
     {
         internal TraktUserHiddenItemsRequest(TraktClient client) : base(client) { }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.Required;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.Required;
 
         internal TraktHiddenItemsSection Section { get; set; }
 
-        internal TraktHiddenItemType? Type { get; set; }
+        internal TraktHiddenItemType Type { get; set; }
 
         protected override IDictionary<string, object> GetUriPathParameters()
         {
             var uriParams = base.GetUriPathParameters();
 
-            uriParams.Add("section", Section.AsString());
+            uriParams.Add("section", Section.UriName);
 
-            if (Type.HasValue && Type.Value != TraktHiddenItemType.Unspecified)
-                uriParams.Add("type", Type.Value.ToString().ToLower());
+            if (Type != null && Type != TraktHiddenItemType.Unspecified)
+                uriParams.Add("type", Type.UriName);
 
             return uriParams;
         }
 
-        protected override string UriTemplate => "users/hidden/{section}{?type}";
+        protected override string UriTemplate => "users/hidden/{section}{?type,extended,page,limit}";
 
         protected override bool SupportsPagination => true;
 

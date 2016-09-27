@@ -1,14 +1,14 @@
 ﻿namespace TraktApiSharp.Requests.WithoutOAuth.Movies
 {
     using Base.Get;
-    using Objects.Basic;
     using Objects.Get.Movies;
+    using System.Collections.Generic;
 
-    internal class TraktMovieReleasesRequest : TraktGetByIdRequest<TraktListResult<TraktMovieRelease>, TraktMovieRelease>
+    internal class TraktMovieReleasesRequest : TraktGetByIdRequest<IEnumerable<TraktMovieRelease>, TraktMovieRelease>
     {
         internal TraktMovieReleasesRequest(TraktClient client) : base(client) { }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.NotRequired;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.NotRequired;
 
         protected override string UriTemplate => "movies/{id}/releases";
 

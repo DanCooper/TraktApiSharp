@@ -8,23 +8,23 @@
 
     internal class TraktMoviesMostWatchedRequest : TraktGetRequest<TraktPaginationListResult<TraktMostWatchedMovie>, TraktMostWatchedMovie>
     {
-        internal TraktMoviesMostWatchedRequest(TraktClient client) : base(client) { Period = TraktPeriod.Weekly; }
+        internal TraktMoviesMostWatchedRequest(TraktClient client) : base(client) { Period = TraktTimePeriod.Weekly; }
 
-        internal TraktPeriod? Period { get; set; }
+        internal TraktTimePeriod Period { get; set; }
 
         protected override IDictionary<string, object> GetUriPathParameters()
         {
             var uriParams = base.GetUriPathParameters();
 
-            if (Period.HasValue && Period.Value != TraktPeriod.Unspecified)
-                uriParams.Add("period", Period.Value.AsString());
+            if (Period != null && Period != TraktTimePeriod.Unspecified)
+                uriParams.Add("period", Period.UriName);
 
             return uriParams;
         }
 
-        protected override string UriTemplate => "movies/watched{/period}{?extended,page,limit}";
+        protected override string UriTemplate => "movies/watched{/period}{?extended,page,limit,query,years,genres,languages,countries,runtimes,ratings,certifications}";
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.NotRequired;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.NotRequired;
 
         protected override bool SupportsPagination => true;
 

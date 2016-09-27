@@ -10,13 +10,13 @@
     {
         internal TraktUserCommentsRequest(TraktClient client) : base(client) { }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.Optional;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.Optional;
 
         internal string Username { get; set; }
 
-        internal TraktCommentType? CommentType { get; set; }
+        internal TraktCommentType CommentType { get; set; }
 
-        internal TraktObjectType? Type { get; set; }
+        internal TraktObjectType Type { get; set; }
 
         protected override IDictionary<string, object> GetUriPathParameters()
         {
@@ -24,16 +24,16 @@
 
             uriParams.Add("username", Username);
 
-            if (CommentType.HasValue && CommentType.Value != TraktCommentType.Unspecified)
-                uriParams.Add("comment_type", CommentType.Value.AsStringUriParameter());
+            if (CommentType != null && CommentType != TraktCommentType.Unspecified)
+                uriParams.Add("comment_type", CommentType.UriName);
 
-            if (Type.HasValue && Type.Value != TraktObjectType.Unspecified)
-                uriParams.Add("type", Type.Value.AsStringUriParameter());
+            if (Type != null && Type != TraktObjectType.Unspecified)
+                uriParams.Add("type", Type.UriName);
 
             return uriParams;
         }
 
-        protected override string UriTemplate => "users/{username}/comments{/comment_type}{/type}";
+        protected override string UriTemplate => "users/{username}/comments{/comment_type}{/type}{?extended,page,limit}";
 
         protected override bool SupportsPagination => true;
 

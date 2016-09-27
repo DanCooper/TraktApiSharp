@@ -3,26 +3,25 @@
     using Base.Get;
     using Enums;
     using Objects.Basic;
-    using Objects.Get.Shows;
     using System.Collections.Generic;
 
-    internal class TraktShowCommentsRequest : TraktGetByIdRequest<TraktPaginationListResult<TraktShowComment>, TraktShowComment>
+    internal class TraktShowCommentsRequest : TraktGetByIdRequest<TraktPaginationListResult<TraktComment>, TraktComment>
     {
         internal TraktShowCommentsRequest(TraktClient client) : base(client) { }
 
-        internal TraktCommentSortOrder? Sorting { get; set; }
+        internal TraktCommentSortOrder Sorting { get; set; }
 
         protected override IDictionary<string, object> GetUriPathParameters()
         {
             var uriParams = base.GetUriPathParameters();
 
-            if (Sorting.HasValue && Sorting.Value != TraktCommentSortOrder.Unspecified)
-                uriParams.Add("sorting", Sorting.Value.AsString());
+            if (Sorting != null && Sorting != TraktCommentSortOrder.Unspecified)
+                uriParams.Add("sorting", Sorting.UriName);
 
             return uriParams;
         }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.NotRequired;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.NotRequired;
 
         protected override string UriTemplate => "shows/{id}/comments{/sorting}{?page,limit}";
 

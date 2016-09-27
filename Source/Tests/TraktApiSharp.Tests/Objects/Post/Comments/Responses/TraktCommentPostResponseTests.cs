@@ -16,13 +16,13 @@
             var commentPostResponse = new TraktCommentPostResponse();
 
             commentPostResponse.Id.Should().Be(0);
-            commentPostResponse.ParentId.Should().Be(0);
+            commentPostResponse.ParentId.Should().BeNull();
             commentPostResponse.CreatedAt.Should().Be(DateTime.MinValue);
             commentPostResponse.Comment.Should().BeNullOrEmpty();
             commentPostResponse.Spoiler.Should().BeFalse();
             commentPostResponse.Review.Should().BeFalse();
-            commentPostResponse.Replies.Should().Be(0);
-            commentPostResponse.Likes.Should().Be(0);
+            commentPostResponse.Replies.Should().NotHaveValue();
+            commentPostResponse.Likes.Should().NotHaveValue();
             commentPostResponse.UserRating.Should().NotHaveValue();
             commentPostResponse.User.Should().BeNull();
             commentPostResponse.Sharing.Should().BeNull();
@@ -38,8 +38,8 @@
             var commentPostResponse = JsonConvert.DeserializeObject<TraktCommentPostResponse>(jsonFile);
 
             commentPostResponse.Should().NotBeNull();
-            commentPostResponse.Id.Should().Be(190);
-            commentPostResponse.ParentId.Should().Be(0);
+            commentPostResponse.Id.Should().Be(190U);
+            commentPostResponse.ParentId.Should().Be(0U);
             commentPostResponse.CreatedAt.Should().Be(DateTime.Parse("2014-08-04T06:46:01.996Z").ToUniversalTime());
             commentPostResponse.Comment.Should().Be("Oh, I wasn't really listening.");
             commentPostResponse.Spoiler.Should().BeFalse();

@@ -1,15 +1,14 @@
 ﻿namespace TraktApiSharp.Requests.WithOAuth.Users
 {
     using Base.Get;
-    using Objects.Basic;
     using Objects.Get.Users;
     using System.Collections.Generic;
 
-    internal class TraktUserFollowingRequest : TraktGetRequest<TraktListResult<TraktUserFollower>, TraktUserFollower>
+    internal class TraktUserFollowingRequest : TraktGetRequest<IEnumerable<TraktUserFollower>, TraktUserFollower>
     {
         internal TraktUserFollowingRequest(TraktClient client) : base(client) { }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.Optional;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.Optional;
 
         internal string Username { get; set; }
 
@@ -20,7 +19,7 @@
             return uriParams;
         }
 
-        protected override string UriTemplate => "users/{username}/following";
+        protected override string UriTemplate => "users/{username}/following{?extended}";
 
         protected override bool IsListResult => true;
     }

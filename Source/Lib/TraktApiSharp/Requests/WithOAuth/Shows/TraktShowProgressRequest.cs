@@ -7,11 +7,13 @@
     {
         internal TraktShowProgressRequest(TraktClient client) : base(client) { }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.Required;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.Required;
 
         internal bool? Hidden { get; set; }
 
         internal bool? Specials { get; set; }
+
+        internal bool? CountSpecials { get; set; }
 
         protected override IDictionary<string, object> GetUriPathParameters()
         {
@@ -22,6 +24,9 @@
 
             if (Specials.HasValue)
                 uriParams.Add("specials", Specials.Value.ToString().ToLower());
+
+            if (CountSpecials.HasValue)
+                uriParams.Add("count_specials", CountSpecials.Value.ToString().ToLower());
 
             return uriParams;
         }

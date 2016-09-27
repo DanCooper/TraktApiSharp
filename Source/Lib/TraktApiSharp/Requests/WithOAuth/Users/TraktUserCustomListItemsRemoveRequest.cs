@@ -5,7 +5,7 @@
     using Objects.Post.Users.CustomListItems.Responses;
     using System.Collections.Generic;
 
-    internal class TraktUserCustomListItemsRemoveRequest : TraktPostByIdRequest<TraktUserCustomListItemsRemovePostResponse, TraktUserCustomListItemsRemovePostResponse, TraktUserCustomListItemsRemovePost>
+    internal class TraktUserCustomListItemsRemoveRequest : TraktPostByIdRequest<TraktUserCustomListItemsRemovePostResponse, TraktUserCustomListItemsRemovePostResponse, TraktUserCustomListItemsPost>
     {
         internal TraktUserCustomListItemsRemoveRequest(TraktClient client) : base(client) { }
 
@@ -20,10 +20,6 @@
 
         protected override string UriTemplate => "users/{username}/lists/{id}/items/remove";
 
-        protected override void Validate()
-        {
-            base.Validate();
-            RequestBody.Validate();
-        }
+        protected override TraktRequestObjectType? RequestObjectType => TraktRequestObjectType.Lists;
     }
 }

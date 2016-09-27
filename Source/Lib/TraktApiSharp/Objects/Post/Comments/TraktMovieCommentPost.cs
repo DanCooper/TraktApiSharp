@@ -2,26 +2,15 @@
 {
     using Get.Movies;
     using Newtonsoft.Json;
-    using System;
 
-    public class TraktMovieCommentPost : TraktCommentPost, IValidatable
+    /// <summary>A movie comment post.</summary>
+    public class TraktMovieCommentPost : TraktCommentPost
     {
+        /// <summary>
+        /// Gets or sets the required Trakt movie for the movie comment post.
+        /// See also <seealso cref="TraktMovie" />.
+        /// </summary>
         [JsonProperty(PropertyName = "movie")]
         public TraktMovie Movie { get; set; }
-
-        public void Validate()
-        {
-            if (Movie == null)
-                throw new ArgumentNullException("movie not set");
-
-            if (string.IsNullOrEmpty(Movie.Title))
-                throw new ArgumentException("movie title not set");
-
-            if (Movie.Year <= 0)
-                throw new ArgumentException("movie year not set");
-
-            if (Movie.Ids == null || !Movie.Ids.HasAnyId)
-                throw new ArgumentException("movie ids not set");
-        }
     }
 }

@@ -12,7 +12,7 @@
 
         internal string Username { get; set; }
 
-        internal TraktListItemType? Type { get; set; }
+        internal TraktListItemType Type { get; set; }
 
         protected override IDictionary<string, object> GetUriPathParameters()
         {
@@ -20,18 +20,14 @@
 
             uriParams.Add("username", Username);
 
-            if (Type.HasValue && Type.Value != TraktListItemType.Unspecified)
-                uriParams.Add("type", Type.Value.AsStringUriParameter());
+            if (Type != null && Type != TraktListItemType.Unspecified)
+                uriParams.Add("type", Type.UriName);
 
             return uriParams;
         }
 
         protected override string UriTemplate => "users/{username}/lists/{id}/items{/type}";
 
-        protected override void Validate()
-        {
-            base.Validate();
-            RequestBody.Validate();
-        }
+        protected override TraktRequestObjectType? RequestObjectType => TraktRequestObjectType.Lists;
     }
 }

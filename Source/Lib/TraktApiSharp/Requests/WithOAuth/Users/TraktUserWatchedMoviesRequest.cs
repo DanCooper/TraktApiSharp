@@ -1,15 +1,14 @@
 ﻿namespace TraktApiSharp.Requests.WithOAuth.Users
 {
     using Base.Get;
-    using Objects.Basic;
-    using Objects.Get.Users.Watched;
+    using Objects.Get.Watched;
     using System.Collections.Generic;
 
-    internal class TraktUserWatchedMoviesRequest : TraktGetRequest<TraktListResult<TraktUserWatchedMovieItem>, TraktUserWatchedMovieItem>
+    internal class TraktUserWatchedMoviesRequest : TraktGetRequest<IEnumerable<TraktWatchedMovie>, TraktWatchedMovie>
     {
         internal TraktUserWatchedMoviesRequest(TraktClient client) : base(client) { }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.Optional;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.Optional;
 
         internal string Username { get; set; }
 
@@ -20,7 +19,7 @@
             return uriParams;
         }
 
-        protected override string UriTemplate => "users/{username}/watched/movies";
+        protected override string UriTemplate => "users/{username}/watched/movies{?extended}";
 
         protected override bool IsListResult => true;
     }

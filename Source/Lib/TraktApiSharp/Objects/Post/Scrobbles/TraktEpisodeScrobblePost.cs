@@ -1,56 +1,27 @@
 ﻿namespace TraktApiSharp.Objects.Post.Scrobbles
 {
+    using Attributes;
     using Get.Shows;
     using Get.Shows.Episodes;
     using Newtonsoft.Json;
-    using System;
 
+    /// <summary>A scrobble post for a Trakt episode.</summary>
     public class TraktEpisodeScrobblePost : TraktScrobblePost
     {
+        /// <summary>
+        /// Gets or sets the required Trakt episode for the scrobble post.
+        /// See also <seealso cref="TraktEpisode" />.
+        /// </summary>
         [JsonProperty(PropertyName = "episode")]
         public TraktEpisode Episode { get; set; }
 
+        /// <summary>
+        /// Gets or sets the Trakt show for the scrobble post.
+        /// See also <seealso cref="TraktShow" />.
+        /// <para>Nullable</para>
+        /// </summary>
         [JsonProperty(PropertyName = "show")]
+        [Nullable]
         public TraktShow Show { get; set; }
-
-        public override void Validate()
-        {
-            base.Validate();
-
-            if (Episode == null)
-                throw new ArgumentException("episode not set");
-
-            if (Episode.Ids == null)
-            {
-                if (Show == null)
-                    throw new ArgumentException("show not set");
-
-                if (string.IsNullOrEmpty(Show.Title))
-                    throw new ArgumentException("show title not set");
-
-                if (Episode.SeasonNumber < 0)
-                    throw new ArgumentException("episode season number not set");
-
-                if (Episode.Number <= 0)
-                    throw new ArgumentException("episode number not set");
-            }
-            else
-            {
-                if (!Episode.Ids.HasAnyId)
-                {
-                    if (Show == null)
-                        throw new ArgumentException("show not set");
-
-                    if (string.IsNullOrEmpty(Show.Title))
-                        throw new ArgumentException("show title not set");
-
-                    if (Episode.SeasonNumber < 0)
-                        throw new ArgumentException("episode season number not set");
-
-                    if (Episode.Number <= 0)
-                        throw new ArgumentException("episode number not set");
-                }
-            }
-        }
     }
 }

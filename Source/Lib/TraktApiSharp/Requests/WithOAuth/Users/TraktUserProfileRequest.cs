@@ -8,7 +8,7 @@
     {
         internal TraktUserProfileRequest(TraktClient client) : base(client) { }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.Optional;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.Optional;
 
         internal string Username { get; set; }
 
@@ -19,6 +19,6 @@
             return uriParams;
         }
 
-        protected override string UriTemplate => "users/{username}";
+        protected override string UriTemplate => "users/{username}{?extended}";
     }
 }

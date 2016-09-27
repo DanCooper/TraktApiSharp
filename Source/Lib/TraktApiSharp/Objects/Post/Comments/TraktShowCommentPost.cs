@@ -2,23 +2,15 @@
 {
     using Get.Shows;
     using Newtonsoft.Json;
-    using System;
 
-    public class TraktShowCommentPost : TraktCommentPost, IValidatable
+    /// <summary>A show comment post.</summary>
+    public class TraktShowCommentPost : TraktCommentPost
     {
+        /// <summary>
+        /// Gets or sets the required Trakt show for the show comment post.
+        /// See also <seealso cref="TraktShow" />.
+        /// </summary>
         [JsonProperty(PropertyName = "show")]
         public TraktShow Show { get; set; }
-
-        public void Validate()
-        {
-            if (Show == null)
-                throw new ArgumentNullException("show not set");
-
-            if (string.IsNullOrEmpty(Show.Title))
-                throw new ArgumentException("show title not set");
-
-            if (Show.Ids == null || !Show.Ids.HasAnyId)
-                throw new ArgumentException("show ids not set");
-        }
     }
 }

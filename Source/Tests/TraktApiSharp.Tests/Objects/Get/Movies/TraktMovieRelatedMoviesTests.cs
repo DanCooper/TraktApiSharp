@@ -29,18 +29,18 @@
             movies[0].Title.Should().Be("Star Wars: Episode V - The Empire Strikes Back");
             movies[0].Year.Should().Be(1980);
             movies[0].Ids.Should().NotBeNull();
-            movies[0].Ids.Trakt.Should().Be(1266);
+            movies[0].Ids.Trakt.Should().Be(1266U);
             movies[0].Ids.Slug.Should().Be("star-wars-episode-v-the-empire-strikes-back-1980");
             movies[0].Ids.Imdb.Should().Be("tt0080684");
-            movies[0].Ids.Tmdb.Should().Be(1891);
+            movies[0].Ids.Tmdb.Should().Be(1891U);
 
             movies[1].Title.Should().Be("Return of the Jedi");
             movies[1].Year.Should().Be(1983);
             movies[1].Ids.Should().NotBeNull();
-            movies[1].Ids.Trakt.Should().Be(1267);
+            movies[1].Ids.Trakt.Should().Be(1267U);
             movies[1].Ids.Slug.Should().Be("return-of-the-jedi-1983");
             movies[1].Ids.Imdb.Should().Be("tt0086190");
-            movies[1].Ids.Tmdb.Should().Be(1892);
+            movies[1].Ids.Tmdb.Should().Be(1892U);
         }
 
         [TestMethod]
@@ -60,10 +60,10 @@
             movies[0].Title.Should().Be("Star Wars: Episode V - The Empire Strikes Back");
             movies[0].Year.Should().Be(1980);
             movies[0].Ids.Should().NotBeNull();
-            movies[0].Ids.Trakt.Should().Be(1266);
+            movies[0].Ids.Trakt.Should().Be(1266U);
             movies[0].Ids.Slug.Should().Be("star-wars-episode-v-the-empire-strikes-back-1980");
             movies[0].Ids.Imdb.Should().Be("tt0080684");
-            movies[0].Ids.Tmdb.Should().Be(1891);
+            movies[0].Ids.Tmdb.Should().Be(1891U);
             movies[0].Images.Should().NotBeNull();
             movies[0].Images.FanArt.Full.Should().Be("https://walter.trakt.us/images/movies/000/001/266/fanarts/original/e6f22a95c4.jpg");
             movies[0].Images.FanArt.Medium.Should().Be("https://walter.trakt.us/images/movies/000/001/266/fanarts/medium/e6f22a95c4.jpg");
@@ -79,10 +79,10 @@
             movies[1].Title.Should().Be("Return of the Jedi");
             movies[1].Year.Should().Be(1983);
             movies[1].Ids.Should().NotBeNull();
-            movies[1].Ids.Trakt.Should().Be(1267);
+            movies[1].Ids.Trakt.Should().Be(1267U);
             movies[1].Ids.Slug.Should().Be("return-of-the-jedi-1983");
             movies[1].Ids.Imdb.Should().Be("tt0086190");
-            movies[1].Ids.Tmdb.Should().Be(1892);
+            movies[1].Ids.Tmdb.Should().Be(1892U);
             movies[1].Images.Should().NotBeNull();
             movies[1].Images.FanArt.Full.Should().Be("https://walter.trakt.us/images/movies/000/001/267/fanarts/original/57469dd637.jpg");
             movies[1].Images.FanArt.Medium.Should().Be("https://walter.trakt.us/images/movies/000/001/267/fanarts/medium/57469dd637.jpg");
@@ -113,18 +113,16 @@
             movies[0].Title.Should().Be("Star Wars: Episode V - The Empire Strikes Back");
             movies[0].Year.Should().Be(1980);
             movies[0].Ids.Should().NotBeNull();
-            movies[0].Ids.Trakt.Should().Be(1266);
+            movies[0].Ids.Trakt.Should().Be(1266U);
             movies[0].Ids.Slug.Should().Be("star-wars-episode-v-the-empire-strikes-back-1980");
             movies[0].Ids.Imdb.Should().Be("tt0080684");
-            movies[0].Ids.Tmdb.Should().Be(1891);
+            movies[0].Ids.Tmdb.Should().Be(1891U);
             movies[0].Tagline.Should().Be("The Adventure Continues...");
             movies[0].Overview.Should().Be("The epic saga continues as Luke Skywalker, in hopes of defeating the evil Galactic Empire, learns the ways of the Jedi from aging master Yoda. But Darth Vader is more determined than ever to capture Luke. Meanwhile, rebel leader Princess Leia, cocky Han Solo, Chewbacca, and droids C-3PO and R2-D2 are thrown into various stages of capture, betrayal and despair.");
             movies[0].Released.Should().Be(DateTime.Parse("1980-05-17"));
             movies[0].Runtime.Should().Be(124);
             movies[0].Trailer.Should().BeNullOrEmpty();
-            movies[0].TrailerUri.Should().BeNull();
             movies[0].Homepage.Should().Be("http://www.starwars.com/films/star-wars-episode-v-the-empire-strikes-back");
-            movies[0].HomepageUri.Should().NotBeNull();
             movies[0].Rating.Should().Be(8.77461f);
             movies[0].Votes.Should().Be(13421);
             movies[0].UpdatedAt.Should().Be(DateTime.Parse("2016-04-04T08:50:42Z").ToUniversalTime());
@@ -136,18 +134,16 @@
             movies[1].Title.Should().Be("Return of the Jedi");
             movies[1].Year.Should().Be(1983);
             movies[1].Ids.Should().NotBeNull();
-            movies[1].Ids.Trakt.Should().Be(1267);
+            movies[1].Ids.Trakt.Should().Be(1267U);
             movies[1].Ids.Slug.Should().Be("return-of-the-jedi-1983");
             movies[1].Ids.Imdb.Should().Be("tt0086190");
-            movies[1].Ids.Tmdb.Should().Be(1892);
+            movies[1].Ids.Tmdb.Should().Be(1892U);
             movies[1].Tagline.Should().Be("The Empire Falls...");
             movies[1].Overview.Should().Be("As Rebel leaders map their strategy for an all-out attack on the Emperor's newer, bigger Death Star. Han Solo remains frozen in the cavernous desert fortress of Jabba the Hutt, the most loathsome outlaw in the universe, who is also keeping Princess Leia as a slave girl. Now a master of the Force, Luke Skywalker rescues his friends, but he cannot become a true Jedi Knight until he wages his own crucial battle against Darth Vader, who has sworn to win Luke over to the dark side of the Force.");
             movies[1].Released.Should().Be(DateTime.Parse("1983-05-25"));
             movies[1].Runtime.Should().Be(135);
             movies[1].Trailer.Should().Be("http://youtube.com/watch?v=2mqRbh7FJ0Y");
-            movies[1].TrailerUri.Should().NotBeNull();
             movies[1].Homepage.Should().Be("http://www.starwars.com/films/star-wars-episode-vi-return-of-the-jedi");
-            movies[1].HomepageUri.Should().NotBeNull();
             movies[1].Rating.Should().Be(8.61184f);
             movies[1].Votes.Should().Be(12853);
             movies[1].UpdatedAt.Should().Be(DateTime.Parse("2016-04-04T08:51:42Z").ToUniversalTime());
@@ -174,10 +170,10 @@
             movies[0].Title.Should().Be("Star Wars: Episode V - The Empire Strikes Back");
             movies[0].Year.Should().Be(1980);
             movies[0].Ids.Should().NotBeNull();
-            movies[0].Ids.Trakt.Should().Be(1266);
+            movies[0].Ids.Trakt.Should().Be(1266U);
             movies[0].Ids.Slug.Should().Be("star-wars-episode-v-the-empire-strikes-back-1980");
             movies[0].Ids.Imdb.Should().Be("tt0080684");
-            movies[0].Ids.Tmdb.Should().Be(1891);
+            movies[0].Ids.Tmdb.Should().Be(1891U);
             movies[0].Images.Should().NotBeNull();
             movies[0].Images.FanArt.Full.Should().Be("https://walter.trakt.us/images/movies/000/001/266/fanarts/original/e6f22a95c4.jpg");
             movies[0].Images.FanArt.Medium.Should().Be("https://walter.trakt.us/images/movies/000/001/266/fanarts/medium/e6f22a95c4.jpg");
@@ -194,9 +190,7 @@
             movies[0].Released.Should().Be(DateTime.Parse("1980-05-17"));
             movies[0].Runtime.Should().Be(124);
             movies[0].Trailer.Should().BeNullOrEmpty();
-            movies[0].TrailerUri.Should().BeNull();
             movies[0].Homepage.Should().Be("http://www.starwars.com/films/star-wars-episode-v-the-empire-strikes-back");
-            movies[0].HomepageUri.Should().NotBeNull();
             movies[0].Rating.Should().Be(8.77461f);
             movies[0].Votes.Should().Be(13421);
             movies[0].UpdatedAt.Should().Be(DateTime.Parse("2016-04-04T08:50:42Z").ToUniversalTime());
@@ -208,10 +202,10 @@
             movies[1].Title.Should().Be("Return of the Jedi");
             movies[1].Year.Should().Be(1983);
             movies[1].Ids.Should().NotBeNull();
-            movies[1].Ids.Trakt.Should().Be(1267);
+            movies[1].Ids.Trakt.Should().Be(1267U);
             movies[1].Ids.Slug.Should().Be("return-of-the-jedi-1983");
             movies[1].Ids.Imdb.Should().Be("tt0086190");
-            movies[1].Ids.Tmdb.Should().Be(1892);
+            movies[1].Ids.Tmdb.Should().Be(1892U);
             movies[1].Images.Should().NotBeNull();
             movies[1].Images.FanArt.Full.Should().Be("https://walter.trakt.us/images/movies/000/001/267/fanarts/original/57469dd637.jpg");
             movies[1].Images.FanArt.Medium.Should().Be("https://walter.trakt.us/images/movies/000/001/267/fanarts/medium/57469dd637.jpg");
@@ -228,9 +222,7 @@
             movies[1].Released.Should().Be(DateTime.Parse("1983-05-25"));
             movies[1].Runtime.Should().Be(135);
             movies[1].Trailer.Should().Be("http://youtube.com/watch?v=2mqRbh7FJ0Y");
-            movies[1].TrailerUri.Should().NotBeNull();
             movies[1].Homepage.Should().Be("http://www.starwars.com/films/star-wars-episode-vi-return-of-the-jedi");
-            movies[1].HomepageUri.Should().NotBeNull();
             movies[1].Rating.Should().Be(8.61184f);
             movies[1].Votes.Should().Be(12853);
             movies[1].UpdatedAt.Should().Be(DateTime.Parse("2016-04-04T08:51:42Z").ToUniversalTime());

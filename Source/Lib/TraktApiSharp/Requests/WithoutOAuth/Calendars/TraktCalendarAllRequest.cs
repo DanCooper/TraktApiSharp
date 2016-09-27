@@ -2,11 +2,10 @@
 {
     using Base.Get;
     using Extensions;
-    using Objects.Basic;
     using System;
     using System.Collections.Generic;
 
-    internal abstract class TraktCalendarAllRequest<T> : TraktGetRequest<TraktListResult<T>, T>
+    internal abstract class TraktCalendarAllRequest<T> : TraktGetRequest<IEnumerable<T>, T>
     {
         internal TraktCalendarAllRequest(TraktClient client) : base(client) { }
 
@@ -22,12 +21,17 @@
                 uriParams.Add("start_date", StartDate.Value.ToTraktDateString());
 
             if (Days.HasValue)
+            {
                 uriParams.Add("days", Days.Value);
+
+                if (!StartDate.HasValue)
+                    uriParams.Add("start_date", DateTime.UtcNow.ToTraktDateString());
+            }
 
             return uriParams;
         }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.NotRequired;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.NotRequired;
 
         protected override bool IsListResult => true;
     }

@@ -2,12 +2,13 @@
 {
     using Base.Get;
     using Objects.Basic;
+    using System.Collections.Generic;
 
-    internal class TraktGenresMoviesRequest : TraktGetRequest<TraktListResult<TraktGenre>, TraktGenre>
+    internal class TraktGenresMoviesRequest : TraktGetRequest<IEnumerable<TraktGenre>, TraktGenre>
     {
         internal TraktGenresMoviesRequest(TraktClient client) : base(client) { }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.NotRequired;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.NotRequired;
 
         protected override bool IsListResult => true;
 

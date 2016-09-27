@@ -1,16 +1,16 @@
 ﻿namespace TraktApiSharp.Requests.WithOAuth.Syncs
 {
     using Base.Get;
-    using Objects.Basic;
-    using Objects.Get.Syncs.Watched;
+    using Objects.Get.Watched;
+    using System.Collections.Generic;
 
-    internal class TraktSyncWatchedMoviesRequest : TraktGetRequest<TraktListResult<TraktSyncWatchedMovieItem>, TraktSyncWatchedMovieItem>
+    internal class TraktSyncWatchedMoviesRequest : TraktGetRequest<IEnumerable<TraktWatchedMovie>, TraktWatchedMovie>
     {
         internal TraktSyncWatchedMoviesRequest(TraktClient client) : base(client) { }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.Required;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.Required;
 
-        protected override string UriTemplate => "sync/watched/movies";
+        protected override string UriTemplate => "sync/watched/movies{?extended}";
 
         protected override bool IsListResult => true;
     }

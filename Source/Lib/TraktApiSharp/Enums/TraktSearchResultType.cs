@@ -1,55 +1,61 @@
 ﻿namespace TraktApiSharp.Enums
 {
-    using Extensions;
-    using Newtonsoft.Json;
-    using System;
-
-    public enum TraktSearchResultType
+    /// <summary>Determines the type of an object in a search result.</summary>
+    public sealed class TraktSearchResultType : TraktEnumeration
     {
-        Unspecified,
-        Movie,
-        Show,
-        Episode,
-        Person,
-        List
-    }
+        /// <summary>An invalid object type.</summary>
+        public static TraktSearchResultType Unspecified { get; } = new TraktSearchResultType();
 
-    public static class TraktSearchResultTypeExtensions
-    {
-        public static string AsString(this TraktSearchResultType searchResultType)
-        {
-            switch (searchResultType)
-            {
-                case TraktSearchResultType.Movie: return "movie";
-                case TraktSearchResultType.Show: return "show";
-                case TraktSearchResultType.Episode: return "episode";
-                case TraktSearchResultType.Person: return "person";
-                case TraktSearchResultType.List: return "list";
-                case TraktSearchResultType.Unspecified: return string.Empty;
-                default:
-                    throw new NotSupportedException(searchResultType.ToString());
-            }
-        }
-    }
+        /// <summary>The search result contains a movie.</summary>
+        public static TraktSearchResultType Movie { get; } = new TraktSearchResultType(1, "movie", "movie", "Movie");
 
-    public class TraktSearchResultTypeConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(string);
-        }
+        /// <summary>The search result contains a show.</summary>
+        public static TraktSearchResultType Show { get; } = new TraktSearchResultType(2, "show", "show", "Show");
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            var enumString = reader.Value as string;
-            enumString = enumString.FirstToUpper();
-            return Enum.Parse(typeof(TraktSearchResultType), enumString, true);
-        }
+        /// <summary>The search result contains an episode.</summary>
+        public static TraktSearchResultType Episode { get; } = new TraktSearchResultType(4, "episode", "episode", "Episode");
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        /// <summary>The search result contains a person.</summary>
+        public static TraktSearchResultType Person { get; } = new TraktSearchResultType(8, "person", "person", "Person");
+
+        /// <summary>The search result contains a list.</summary>
+        public static TraktSearchResultType List { get; } = new TraktSearchResultType(16, "list", "list", "List");
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TraktSearchResultType" /> class.<para />
+        /// The initialized <see cref="TraktSearchResultType" /> is invalid.
+        /// </summary>
+        public TraktSearchResultType() : base() { }
+
+        private TraktSearchResultType(int value, string objectName, string uriName, string displayName)
+            : base(value, objectName, uriName, displayName) { }
+
+        /// <summary>
+        /// Combines two <see cref="TraktSearchResultType" /> enumerations to one enumeration.
+        /// <para>
+        /// Usage: TraktSearchResultType.Movie | TraktSearchResultType.Show
+        /// </para>
+        /// </summary>
+        /// <param name="first">The first enumeration.</param>
+        /// <param name="second">The second enumeration.</param>
+        /// <returns>
+        /// A binary combination of both given enumerations or null,
+        /// if at least on of the given enumerations is null or unspecified.
+        /// </returns>
+        public static TraktSearchResultType operator |(TraktSearchResultType first, TraktSearchResultType second)
         {
-            var searchResultType = (TraktSearchResultType)value;
-            writer.WriteValue(searchResultType.AsString());
+            if (first == null || second == null)
+                return null;
+
+            if (first == Unspecified || second == Unspecified)
+                return Unspecified;
+
+            var newValue = first.Value | second.Value;
+            var newObjectName = string.Join(",", first.ObjectName, second.ObjectName);
+            var newUriName = string.Join(",", first.UriName, second.UriName);
+            var newDisplayName = string.Join(", ", first.DisplayName, second.DisplayName);
+
+            return new TraktSearchResultType(newValue, newObjectName, newUriName, newDisplayName);
         }
     }
 }

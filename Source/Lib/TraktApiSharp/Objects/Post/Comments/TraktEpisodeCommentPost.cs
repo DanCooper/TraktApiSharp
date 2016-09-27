@@ -2,20 +2,15 @@
 {
     using Get.Shows.Episodes;
     using Newtonsoft.Json;
-    using System;
 
-    public class TraktEpisodeCommentPost : TraktCommentPost, IValidatable
+    /// <summary>An episode comment post.</summary>
+    public class TraktEpisodeCommentPost : TraktCommentPost
     {
+        /// <summary>
+        /// Gets or sets the required Trakt episode for the episode comment post.
+        /// See also <seealso cref="TraktEpisode" />.
+        /// </summary>
         [JsonProperty(PropertyName = "episode")]
         public TraktEpisode Episode { get; set; }
-
-        public void Validate()
-        {
-            if (Episode == null)
-                throw new ArgumentNullException("episode not set");
-
-            if (Episode.Ids == null || !Episode.Ids.HasAnyId)
-                throw new ArgumentException("episode ids not set");
-        }
     }
 }

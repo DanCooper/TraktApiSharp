@@ -1,41 +1,27 @@
 ﻿namespace TraktApiSharp.Objects.Post.Checkins
 {
+    using Attributes;
     using Get.Shows;
     using Get.Shows.Episodes;
     using Newtonsoft.Json;
-    using System;
 
-    public class TraktEpisodeCheckinPost : TraktCheckinPost, IValidatable
+    /// <summary>A checkin post for a Trakt episode.</summary>
+    public class TraktEpisodeCheckinPost : TraktCheckinPost
     {
+        /// <summary>
+        /// Gets or sets the required Trakt episode for the checkin post.
+        /// See also <seealso cref="TraktEpisode" />.
+        /// </summary>
         [JsonProperty(PropertyName = "episode")]
         public TraktEpisode Episode { get; set; }
 
+        /// <summary>
+        /// Gets or sets the Trakt show for the checkin post.
+        /// See also <seealso cref="TraktShow" />.
+        /// <para>Nullable</para>
+        /// </summary>
         [JsonProperty(PropertyName = "show")]
+        [Nullable]
         public TraktShow Show { get; set; }
-
-        public void Validate()
-        {
-            if (Episode == null)
-                throw new ArgumentException("episode not set");
-
-            if (Episode.Ids.HasAnyId)
-                return;
-            else
-            {
-                if (Show == null)
-                    throw new ArgumentException("show not set");
-
-                if (string.IsNullOrEmpty(Show.Title))
-                    throw new ArgumentException("show title not set");
-
-                if (Episode.SeasonNumber <= 0)
-                    throw new ArgumentException("episode season number not set");
-
-                if (Episode.Number <= 0)
-                    throw new ArgumentException("episode number not set");
-
-                throw new ArgumentException("episode ids not set");
-            }
-        }
     }
 }

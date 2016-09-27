@@ -2,20 +2,15 @@
 {
     using Get.Users.Lists;
     using Newtonsoft.Json;
-    using System;
 
-    public class TraktListCommentPost : TraktCommentPost, IValidatable
+    /// <summary>A list comment post.</summary>
+    public class TraktListCommentPost : TraktCommentPost
     {
+        /// <summary>
+        /// Gets or sets the required Trakt list for the list comment post.
+        /// See also <seealso cref="TraktList" />.
+        /// </summary>
         [JsonProperty(PropertyName = "list")]
         public TraktList List { get; set; }
-
-        public void Validate()
-        {
-            if (List == null)
-                throw new ArgumentNullException("list not set");
-
-            if (List.Ids == null || !List.Ids.HasAnyId)
-                throw new ArgumentException("list ids not set");
-        }
     }
 }

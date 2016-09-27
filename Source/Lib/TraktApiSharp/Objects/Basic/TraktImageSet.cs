@@ -1,59 +1,24 @@
 ﻿namespace TraktApiSharp.Objects.Basic
 {
+    using Attributes;
     using Newtonsoft.Json;
-    using System;
 
-    /// <summary>
-    /// An image for an item in various sizes.
-    /// </summary>
+    /// <summary>An image for an item in various sizes.</summary>
     public class TraktImageSet
     {
-        /// <summary>
-        /// The address to the full size image.
-        /// </summary>
+        /// <summary>The address to the full size image.<para>Nullable</para></summary>
         [JsonProperty(PropertyName = "full")]
+        [Nullable]
         public string Full { get; set; }
 
-        /// <summary>
-        /// The URI to the full size image.
-        /// </summary>
-        [JsonIgnore]
-        public Uri FullUri
-        {
-            get { return !string.IsNullOrEmpty(Full) ? new Uri(Full) : null; }
-            set { Full = value.AbsoluteUri; }
-        }
-
-        /// <summary>
-        /// The address to the medium size image.
-        /// </summary>
+        /// <summary>The address to the medium size image.<para>Nullable</para></summary>
         [JsonProperty(PropertyName = "medium")]
+        [Nullable]
         public string Medium { get; set; }
 
-        /// <summary>
-        /// The URI to the medium size image.
-        /// </summary>
-        [JsonIgnore]
-        public Uri MediumUri
-        {
-            get { return !string.IsNullOrEmpty(Medium) ? new Uri(Medium) : null; }
-            set { Medium = value.AbsoluteUri; }
-        }
-
-        /// <summary>
-        /// The address to the thumbnail image.
-        /// </summary>
+        /// <summary>The address to the thumbnail image.<para>Nullable</para></summary>
         [JsonProperty(PropertyName = "thumb")]
+        [Nullable]
         public string Thumb { get; set; }
-
-        /// <summary>
-        /// The URI to the thumbnail image.
-        /// </summary>
-        [JsonIgnore]
-        public Uri ThumbUri
-        {
-            get { return !string.IsNullOrEmpty(Thumb) ? new Uri(Thumb) : null; }
-            set { Thumb = value.AbsoluteUri; }
-        }
     }
 }

@@ -2,28 +2,15 @@
 {
     using Get.Movies;
     using Newtonsoft.Json;
-    using System;
 
+    /// <summary>A scrobble post for a Trakt movie.</summary>
     public class TraktMovieScrobblePost : TraktScrobblePost
     {
+        /// <summary>
+        /// Gets or sets the required Trakt movie for the scrobble post.
+        /// See also <seealso cref="TraktMovie" />.
+        /// </summary>
         [JsonProperty(PropertyName = "movie")]
         public TraktMovie Movie { get; set; }
-
-        public override void Validate()
-        {
-            base.Validate();
-
-            if (Movie == null)
-                throw new ArgumentException("movie not set");
-
-            if (string.IsNullOrEmpty(Movie.Title))
-                throw new ArgumentException("movie title not set");
-
-            if (Movie.Year <= 0)
-                throw new ArgumentException("movie year not set");
-
-            if (Movie.Ids == null || !Movie.Ids.HasAnyId)
-                throw new ArgumentException("movie ids not set");
-        }
     }
 }

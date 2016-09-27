@@ -8,7 +8,7 @@
     {
         protected TraktGetByIdSeasonRequest(TraktClient client) : base(client) { }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement { get { return TraktAuthenticationRequirement.NotRequired; } }
+        protected override TraktAuthorizationRequirement AuthorizationRequirement { get { return TraktAuthorizationRequirement.NotRequired; } }
 
         protected override TraktRequestObjectType? RequestObjectType => TraktRequestObjectType.Seasons;
 
@@ -23,7 +23,7 @@
         {
             base.Validate();
 
-            if (Season <= 0)
+            if (Season < 0)
                 throw new ArgumentException("season must be a positive integer", "Season");
         }
     }

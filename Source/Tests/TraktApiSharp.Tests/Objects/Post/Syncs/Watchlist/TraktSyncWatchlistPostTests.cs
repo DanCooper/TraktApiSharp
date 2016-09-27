@@ -28,9 +28,9 @@
         {
             var watchlistPost = new TraktSyncWatchlistPost
             {
-                Movies = new List<TraktSyncWatchlistPostMovieItem>()
+                Movies = new List<TraktSyncWatchlistPostMovie>()
                 {
-                    new TraktSyncWatchlistPostMovieItem
+                    new TraktSyncWatchlistPostMovie
                     {
                         Title = "Batman Begins",
                         Year = 2005,
@@ -42,7 +42,7 @@
                             Tmdb = 272
                         }
                     },
-                    new TraktSyncWatchlistPostMovieItem
+                    new TraktSyncWatchlistPostMovie
                     {
                         Ids = new TraktMovieIds
                         {
@@ -50,9 +50,9 @@
                         }
                     }
                 },
-                Shows = new List<TraktSyncWatchlistPostShowItem>()
+                Shows = new List<TraktSyncWatchlistPostShow>()
                 {
-                    new TraktSyncWatchlistPostShowItem
+                    new TraktSyncWatchlistPostShow
                     {
                         Title = "Breaking Bad",
                         Year = 2008,
@@ -66,7 +66,7 @@
                             TvRage = 18164
                         }
                     },
-                    new TraktSyncWatchlistPostShowItem
+                    new TraktSyncWatchlistPostShow
                     {
                         Title = "The Walking Dead",
                         Year = 2010,
@@ -79,15 +79,15 @@
                             Tmdb = 1402,
                             TvRage = 25056
                         },
-                        Seasons = new List<TraktSyncWatchlistPostShowSeasonItem>()
+                        Seasons = new List<TraktSyncWatchlistPostShowSeason>()
                         {
-                            new TraktSyncWatchlistPostShowSeasonItem
+                            new TraktSyncWatchlistPostShowSeason
                             {
                                 Number = 3
                             }
                         }
                     },
-                    new TraktSyncWatchlistPostShowItem
+                    new TraktSyncWatchlistPostShow
                     {
                         Title = "Mad Men",
                         Year = 2007,
@@ -100,18 +100,18 @@
                             Tmdb = 1104,
                             TvRage = 16356
                         },
-                        Seasons = new List<TraktSyncWatchlistPostShowSeasonItem>()
+                        Seasons = new List<TraktSyncWatchlistPostShowSeason>()
                         {
-                            new TraktSyncWatchlistPostShowSeasonItem
+                            new TraktSyncWatchlistPostShowSeason
                             {
                                 Number = 1,
-                                Episodes = new List<TraktSyncWatchlistPostShowEpisodeItem>()
+                                Episodes = new List<TraktSyncWatchlistPostShowEpisode>()
                                 {
-                                    new TraktSyncWatchlistPostShowEpisodeItem
+                                    new TraktSyncWatchlistPostShowEpisode
                                     {
                                         Number = 1
                                     },
-                                    new TraktSyncWatchlistPostShowEpisodeItem
+                                    new TraktSyncWatchlistPostShowEpisode
                                     {
                                         Number = 2
                                     }
@@ -120,9 +120,9 @@
                         }
                     }
                 },
-                Episodes = new List<TraktSyncWatchlistPostEpisodeItem>()
+                Episodes = new List<TraktSyncWatchlistPostEpisode>()
                 {
-                    new TraktSyncWatchlistPostEpisodeItem
+                    new TraktSyncWatchlistPostEpisode
                     {
                         Ids = new TraktEpisodeIds
                         {
@@ -153,41 +153,41 @@
             movies[0].Title.Should().Be("Batman Begins");
             movies[0].Year.Should().Be(2005);
             movies[0].Ids.Should().NotBeNull();
-            movies[0].Ids.Trakt.Should().Be(1);
+            movies[0].Ids.Trakt.Should().Be(1U);
             movies[0].Ids.Slug.Should().Be("batman-begins-2005");
             movies[0].Ids.Imdb.Should().Be("tt0372784");
-            movies[0].Ids.Tmdb.Should().Be(272);
+            movies[0].Ids.Tmdb.Should().Be(272U);
 
             movies[1].Title.Should().BeNullOrEmpty();
             movies[1].Year.Should().NotHaveValue();
             movies[1].Ids.Should().NotBeNull();
-            movies[1].Ids.Trakt.Should().Be(0);
+            movies[1].Ids.Trakt.Should().Be(0U);
             movies[1].Ids.Slug.Should().BeNullOrEmpty();
             movies[1].Ids.Imdb.Should().Be("tt0000111");
-            movies[1].Ids.Tmdb.Should().NotHaveValue();
+            movies[1].Ids.Tmdb.Should().BeNull();
 
             var shows = watchlistPostFromJson.Shows.ToArray();
 
             shows[0].Title.Should().Be("Breaking Bad");
             shows[0].Year.Should().Be(2008);
             shows[0].Ids.Should().NotBeNull();
-            shows[0].Ids.Trakt.Should().Be(1);
+            shows[0].Ids.Trakt.Should().Be(1U);
             shows[0].Ids.Slug.Should().Be("breaking-bad");
-            shows[0].Ids.Tvdb.Should().Be(81189);
+            shows[0].Ids.Tvdb.Should().Be(81189U);
             shows[0].Ids.Imdb.Should().Be("tt0903747");
-            shows[0].Ids.Tmdb.Should().Be(1396);
-            shows[0].Ids.TvRage.Should().Be(18164);
+            shows[0].Ids.Tmdb.Should().Be(1396U);
+            shows[0].Ids.TvRage.Should().Be(18164U);
             shows[0].Seasons.Should().BeNull();
 
             shows[1].Title.Should().Be("The Walking Dead");
             shows[1].Year.Should().Be(2010);
             shows[1].Ids.Should().NotBeNull();
-            shows[1].Ids.Trakt.Should().Be(2);
+            shows[1].Ids.Trakt.Should().Be(2U);
             shows[1].Ids.Slug.Should().Be("the-walking-dead");
-            shows[1].Ids.Tvdb.Should().Be(153021);
+            shows[1].Ids.Tvdb.Should().Be(153021U);
             shows[1].Ids.Imdb.Should().Be("tt1520211");
-            shows[1].Ids.Tmdb.Should().Be(1402);
-            shows[1].Ids.TvRage.Should().Be(25056);
+            shows[1].Ids.Tmdb.Should().Be(1402U);
+            shows[1].Ids.TvRage.Should().Be(25056U);
             shows[1].Seasons.Should().NotBeNull().And.HaveCount(1);
 
             var show2Seasons = shows[1].Seasons.ToArray();
@@ -198,12 +198,12 @@
             shows[2].Title.Should().Be("Mad Men");
             shows[2].Year.Should().Be(2007);
             shows[2].Ids.Should().NotBeNull();
-            shows[2].Ids.Trakt.Should().Be(4);
+            shows[2].Ids.Trakt.Should().Be(4U);
             shows[2].Ids.Slug.Should().Be("mad-men");
-            shows[2].Ids.Tvdb.Should().Be(80337);
+            shows[2].Ids.Tvdb.Should().Be(80337U);
             shows[2].Ids.Imdb.Should().Be("tt0804503");
-            shows[2].Ids.Tmdb.Should().Be(1104);
-            shows[2].Ids.TvRage.Should().Be(16356);
+            shows[2].Ids.Tmdb.Should().Be(1104U);
+            shows[2].Ids.TvRage.Should().Be(16356U);
             shows[2].Seasons.Should().NotBeNull().And.HaveCount(1);
 
             var show3Seasons = shows[2].Seasons.ToArray();
@@ -220,12 +220,11 @@
             var episodes = watchlistPostFromJson.Episodes.ToArray();
 
             episodes[0].Ids.Should().NotBeNull();
-            episodes[0].Ids.Trakt.Should().Be(1061);
-            episodes[0].Ids.Slug.Should().BeNullOrEmpty();
-            episodes[0].Ids.Tvdb.Should().Be(1555111);
+            episodes[0].Ids.Trakt.Should().Be(1061U);
+            episodes[0].Ids.Tvdb.Should().Be(1555111U);
             episodes[0].Ids.Imdb.Should().Be("tt007404");
-            episodes[0].Ids.Tmdb.Should().Be(422183);
-            episodes[0].Ids.TvRage.Should().Be(12345);
+            episodes[0].Ids.Tmdb.Should().Be(422183U);
+            episodes[0].Ids.TvRage.Should().Be(12345U);
         }
     }
 }

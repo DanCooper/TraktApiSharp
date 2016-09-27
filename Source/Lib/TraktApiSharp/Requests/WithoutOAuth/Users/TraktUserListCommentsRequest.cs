@@ -9,11 +9,11 @@
     {
         internal TraktUserListCommentsRequest(TraktClient client) : base(client) { }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.NotRequired;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.NotRequired;
 
         internal string Username { get; set; }
 
-        internal TraktCommentSortOrder? Sorting { get; set; }
+        internal TraktCommentSortOrder Sorting { get; set; }
 
         protected override IDictionary<string, object> GetUriPathParameters()
         {
@@ -21,13 +21,13 @@
 
             uriParams.Add("username", Username);
 
-            if (Sorting.HasValue && Sorting.Value != TraktCommentSortOrder.Unspecified)
-                uriParams.Add("sorting", Sorting.Value.AsString());
+            if (Sorting != null && Sorting != TraktCommentSortOrder.Unspecified)
+                uriParams.Add("sorting", Sorting.UriName);
 
             return uriParams;
         }
 
-        protected override string UriTemplate => "users/{username}/lists/{id}/comments{/sorting}";
+        protected override string UriTemplate => "users/{username}/lists/{id}/comments{/sorting}{?page,limit}";
 
         protected override bool SupportsPagination => true;
 

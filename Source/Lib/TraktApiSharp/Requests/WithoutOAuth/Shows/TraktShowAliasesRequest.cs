@@ -1,14 +1,14 @@
 ﻿namespace TraktApiSharp.Requests.WithoutOAuth.Shows
 {
     using Base.Get;
-    using Objects.Basic;
     using Objects.Get.Shows;
+    using System.Collections.Generic;
 
-    internal class TraktShowAliasesRequest : TraktGetByIdRequest<TraktListResult<TraktShowAlias>, TraktShowAlias>
+    internal class TraktShowAliasesRequest : TraktGetByIdRequest<IEnumerable<TraktShowAlias>, TraktShowAlias>
     {
         internal TraktShowAliasesRequest(TraktClient client) : base(client) { }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.NotRequired;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.NotRequired;
 
         protected override string UriTemplate => "shows/{id}/aliases";
 

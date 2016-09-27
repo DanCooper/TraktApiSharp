@@ -6,9 +6,9 @@ namespace TraktApiSharp.Requests.Base
 {
     using Core;
     using Exceptions;
-    using Newtonsoft.Json;
     using Objects.Basic;
     using Objects.Post.Checkins.Responses;
+    using Params;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -18,6 +18,7 @@ namespace TraktApiSharp.Requests.Base
     using System.Text;
     using System.Threading.Tasks;
     using UriTemplates;
+    using Utils;
 
     internal abstract class TraktRequest<TResult, TItem, TRequestBody> : ITraktRequest<TResult, TItem>
     {
@@ -26,6 +27,8 @@ namespace TraktApiSharp.Requests.Base
         private static string HEADER_PAGINATION_PAGE_COUNT_KEY = "X-Pagination-Page-Count";
         private static string HEADER_PAGINATION_ITEM_COUNT_KEY = "X-Pagination-Item-Count";
         private static string HEADER_TRENDING_USER_COUNT_KEY = "X-Trending-User-Count";
+        private static string HEADER_SORT_BY = "X-Sort-By";
+        private static string HEADER_SORT_HOW = "X-Sort-How";
 
         protected TraktRequest(TraktClient client)
         {
@@ -44,30 +47,26 @@ namespace TraktApiSharp.Requests.Base
 
             SetDefaultRequestHeaders(httpClient);
 
-            using (var request = new HttpRequestMessage(Method, Url) { Content = RequestBodyContent })
-            {
-                SetRequestHeadersForAuthentication(request);
+            var request = new HttpRequestMessage(Method, Url) { Content = RequestBodyContent };
+            SetRequestHeadersForAuthorization(request);
 
-                using (var response = await httpClient.SendAsync(request))
-                {
-                    // Error handling
-                    if (!response.IsSuccessStatusCode)
-                        ErrorHandling(response);
+            var response = await httpClient.SendAsync(request).ConfigureAwait(false);
 
-                    var responseContent = response.Content != null ? await response.Content.ReadAsStringAsync() : string.Empty;
+            if (!response.IsSuccessStatusCode)
+                await ErrorHandling(response);
 
-                    // No content
-                    if (string.IsNullOrEmpty(responseContent) || response.StatusCode == HttpStatusCode.NoContent)
-                        return default(TResult);
+            var responseContent = response.Content != null ? await response.Content.ReadAsStringAsync() : string.Empty;
 
-                    // Handle list result
-                    if (IsListResult)
-                        return await HandleListResult(response, responseContent);
+            // No content
+            if (string.IsNullOrEmpty(responseContent) || response.StatusCode == HttpStatusCode.NoContent)
+                return default(TResult);
 
-                    // Single object item
-                    return await Task.Run(() => JsonConvert.DeserializeObject<TResult>(responseContent));
-                }
-            }
+            // Handle list result
+            if (IsListResult)
+                return HandleListResult(response, responseContent);
+
+            // Single object item
+            return Json.Deserialize<TResult>(responseContent);
         }
 
         internal TraktClient Client { get; private set; }
@@ -78,30 +77,13 @@ namespace TraktApiSharp.Requests.Base
 
         internal virtual int Episode { get; set; }
 
-        internal virtual TraktExtendedOption ExtendedOption { get; set; }
+        internal TraktExtendedOption ExtendedOption { get; set; }
+
+        internal TraktCommonFilter Filter { get; set; }
 
         internal TraktPaginationOptions PaginationOptions { get; set; }
 
-        private bool _authenticationHeaderRequired;
-
-        internal bool AuthenticationHeaderRequired
-        {
-            get
-            {
-                if (AuthenticationRequirement == TraktAuthenticationRequirement.Required)
-                    return true;
-
-                return _authenticationHeaderRequired;
-            }
-
-            set
-            {
-                if (!value && AuthenticationRequirement == TraktAuthenticationRequirement.Required)
-                    throw new TraktAuthenticationException("request type requires authentication");
-
-                _authenticationHeaderRequired = value;
-            }
-        }
+        internal bool AuthorizationHeaderRequired => AuthorizationRequirement == TraktAuthorizationRequirement.Required;
 
         internal TRequestBody RequestBody { get; set; }
 
@@ -120,33 +102,36 @@ namespace TraktApiSharp.Requests.Base
             var pathParams = GetUriPathParameters();
 
             foreach (var param in pathParams)
-                uriPath.AddParameter(param.Key, param.Value);
+                uriPath.AddParameterFromKeyValuePair(param.Key, param.Value);
 
             if (ExtendedOption != null && ExtendedOption.HasAnySet)
-            {
                 uriPath.AddParameters(new { extended = ExtendedOption.Resolve() });
-            }
 
-            if (SupportsPagination)
+            if (Filter != null && Filter.HasValues)
+                uriPath.AddParametersFromDictionary(Filter.GetParameters());
+
+            if (SupportsPagination || SupportsPaginationParameters)
             {
                 if (PaginationOptions.Page != null)
-                    uriPath.AddParameter("page", PaginationOptions.Page.ToString());
+                    uriPath.AddParameterFromKeyValuePair("page", PaginationOptions.Page.ToString());
 
                 if (PaginationOptions.Limit != null)
-                    uriPath.AddParameter("limit", PaginationOptions.Limit.ToString());
+                    uriPath.AddParameterFromKeyValuePair("limit", PaginationOptions.Limit.ToString());
             }
 
             var uri = uriPath.Resolve();
             return $"{Client.Configuration.BaseUrl}{uri}";
         }
 
-        protected abstract TraktAuthenticationRequirement AuthenticationRequirement { get; }
+        protected abstract TraktAuthorizationRequirement AuthorizationRequirement { get; }
 
         protected virtual TraktRequestObjectType? RequestObjectType => null;
 
         protected virtual bool IsListResult => false;
 
         protected virtual bool SupportsPagination => false;
+
+        protected virtual bool SupportsPaginationParameters => false;
 
         protected virtual bool IsCheckinRequest => false;
 
@@ -168,25 +153,24 @@ namespace TraktApiSharp.Requests.Base
                 if (RequestBody == null)
                     return null;
 
-                return JsonConvert.SerializeObject(RequestBody, new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.None,
-                    NullValueHandling = NullValueHandling.Ignore
-                });
+                return Json.Serialize(RequestBody);
             }
         }
 
         protected virtual void Validate() { }
 
-        protected virtual void SetRequestHeadersForAuthentication(HttpRequestMessage request)
+        protected virtual void SetRequestHeadersForAuthorization(HttpRequestMessage request)
         {
-            if (AuthenticationHeaderRequired)
+            if (AuthorizationHeaderRequired)
             {
-                if (!Client.Authentication.IsAuthenticated)
-                    throw new TraktAuthorizationException("authentication is required for this request, but the current authentication parameters are invalid");
+                if (!Client.Authentication.IsAuthorized)
+                    throw new TraktAuthorizationException("authorization is required for this request, but the current authorization parameters are invalid");
 
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", Client.Authentication.AccessToken.AccessToken);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", Client.Authentication.Authorization.AccessToken);
             }
+
+            if (AuthorizationRequirement == TraktAuthorizationRequirement.Optional && Client.Configuration.ForceAuthorization && Client.Authentication.IsAuthorized)
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", Client.Authentication.Authorization.AccessToken);
         }
 
         private void SetDefaultRequestHeaders(HttpClient httpClient)
@@ -203,7 +187,7 @@ namespace TraktApiSharp.Requests.Base
                 httpClient.DefaultRequestHeaders.Accept.Add(appJsonHeader);
         }
 
-        private async Task<TResult> HandleListResult(HttpResponseMessage response, string responseContent)
+        private TResult HandleListResult(HttpResponseMessage response, string responseContent)
         {
             if (SupportsPagination)
             {
@@ -214,82 +198,86 @@ namespace TraktApiSharp.Requests.Base
                 var typePaginationList = typeof(TraktPaginationListResult<>).MakeGenericType(typePaginationElement);
                 var paginationListResult = Activator.CreateInstance(typePaginationList);
 
-                (paginationListResult as TraktPaginationListResult<TItem>).Items = await Task.Run(() => JsonConvert.DeserializeObject<IEnumerable<TItem>>(responseContent));
+                (paginationListResult as TraktPaginationListResult<TItem>).Items = Json.Deserialize<IEnumerable<TItem>>(responseContent);
 
                 if (response.Headers != null)
-                    ParseHeaderValues(paginationListResult as TraktPaginationListResult<TItem>, response.Headers);
+                    ParserResponseHeaderValues(paginationListResult as TraktPaginationListResult<TItem>, response.Headers);
 
                 return (TResult)paginationListResult;
             }
 
-            if (typeof(TResult) != typeof(TraktListResult<TItem>))
-                throw new InvalidCastException($"{typeof(TResult).ToString()} cannot be converted as TraktListResult<{typeof(TItem).ToString()}>");
-
-            var typeElement = typeof(TResult).GenericTypeArguments[0];
-            var typeList = typeof(TraktListResult<>).MakeGenericType(typeElement);
-            var listResult = Activator.CreateInstance(typeList);
-
-            (listResult as TraktListResult<TItem>).Items = await Task.Run(() => JsonConvert.DeserializeObject<IEnumerable<TItem>>(responseContent));
-
-            return (TResult)listResult;
+            var results = Json.Deserialize<IEnumerable<TItem>>(responseContent);
+            return (TResult)results;
         }
 
-        private void ParseHeaderValues(TraktPaginationListResult<TItem> paginationListResult, HttpResponseHeaders headers)
+        private void ParserResponseHeaderValues(ITraktPaginationResultHeaders paginationListResult, HttpResponseHeaders responseHeaders)
         {
             IEnumerable<string> values;
 
-            if (headers.TryGetValues(HEADER_PAGINATION_PAGE_KEY, out values))
+            if (responseHeaders.TryGetValues(HEADER_PAGINATION_PAGE_KEY, out values))
             {
                 var strPage = values.First();
                 int page;
 
-                if (Int32.TryParse(strPage, out page))
+                if (int.TryParse(strPage, out page))
                     paginationListResult.Page = page;
             }
 
-            if (headers.TryGetValues(HEADER_PAGINATION_LIMIT_KEY, out values))
+            if (responseHeaders.TryGetValues(HEADER_PAGINATION_LIMIT_KEY, out values))
             {
                 var strLimit = values.First();
                 int limit;
 
-                if (Int32.TryParse(strLimit, out limit))
+                if (int.TryParse(strLimit, out limit))
                     paginationListResult.Limit = limit;
             }
 
-            if (headers.TryGetValues(HEADER_PAGINATION_PAGE_COUNT_KEY, out values))
+            if (responseHeaders.TryGetValues(HEADER_PAGINATION_PAGE_COUNT_KEY, out values))
             {
                 var strPageCount = values.First();
                 int pageCount;
 
-                if (Int32.TryParse(strPageCount, out pageCount))
+                if (int.TryParse(strPageCount, out pageCount))
                     paginationListResult.PageCount = pageCount;
             }
 
-            if (headers.TryGetValues(HEADER_PAGINATION_ITEM_COUNT_KEY, out values))
+            if (responseHeaders.TryGetValues(HEADER_PAGINATION_ITEM_COUNT_KEY, out values))
             {
                 var strItemCount = values.First();
                 int itemCount;
 
-                if (Int32.TryParse(strItemCount, out itemCount))
+                if (int.TryParse(strItemCount, out itemCount))
                     paginationListResult.ItemCount = itemCount;
             }
 
-            if (headers.TryGetValues(HEADER_TRENDING_USER_COUNT_KEY, out values))
+            if (responseHeaders.TryGetValues(HEADER_TRENDING_USER_COUNT_KEY, out values))
             {
                 var strUserCount = values.First();
                 int userCount;
 
-                if (Int32.TryParse(strUserCount, out userCount))
+                if (int.TryParse(strUserCount, out userCount))
                     paginationListResult.UserCount = userCount;
+            }
+
+            if (responseHeaders.TryGetValues(HEADER_SORT_BY, out values))
+            {
+                var strSortBy = values.First();
+                paginationListResult.SortBy = strSortBy;
+            }
+
+            if (responseHeaders.TryGetValues(HEADER_SORT_HOW, out values))
+            {
+                var strSortHow = values.First();
+                paginationListResult.SortHow = strSortHow;
             }
         }
 
-        private void ErrorHandling(HttpResponseMessage response)
+        private async Task ErrorHandling(HttpResponseMessage response)
         {
             var responseContent = string.Empty;
 
             if (response.Content != null)
-                responseContent = response.Content.ReadAsStringAsync().Result;
+                responseContent = await response.Content.ReadAsStringAsync();
 
             var code = response.StatusCode;
 
@@ -409,7 +397,7 @@ namespace TraktApiSharp.Requests.Base
                         TraktCheckinPostErrorResponse errorResponse = null;
 
                         if (!string.IsNullOrEmpty(responseContent))
-                            errorResponse = JsonConvert.DeserializeObject<TraktCheckinPostErrorResponse>(responseContent);
+                            errorResponse = Json.Deserialize<TraktCheckinPostErrorResponse>(responseContent);
 
                         throw new TraktCheckinException("checkin is already in progress")
                         {
@@ -495,7 +483,7 @@ namespace TraktApiSharp.Requests.Base
 
             try
             {
-                error = JsonConvert.DeserializeObject<TraktError>(responseContent);
+                error = Json.Deserialize<TraktError>(responseContent);
             }
             catch (Exception ex)
             {

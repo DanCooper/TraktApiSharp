@@ -1,15 +1,14 @@
 ﻿namespace TraktApiSharp.Requests.WithOAuth.Users
 {
     using Base.Get;
-    using Objects.Basic;
     using Objects.Get.Users.Lists;
     using System.Collections.Generic;
 
-    internal class TraktUserCustomListsRequest : TraktGetRequest<TraktListResult<TraktList>, TraktList>
+    internal class TraktUserCustomListsRequest : TraktGetRequest<IEnumerable<TraktList>, TraktList>
     {
         internal TraktUserCustomListsRequest(TraktClient client) : base(client) { }
 
-        protected override TraktAuthenticationRequirement AuthenticationRequirement => TraktAuthenticationRequirement.Optional;
+        protected override TraktAuthorizationRequirement AuthorizationRequirement => TraktAuthorizationRequirement.Optional;
 
         internal string Username { get; set; }
 

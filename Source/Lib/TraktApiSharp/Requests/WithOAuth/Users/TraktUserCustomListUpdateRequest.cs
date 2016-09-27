@@ -1,11 +1,11 @@
 ﻿namespace TraktApiSharp.Requests.WithOAuth.Users
 {
     using Base.Put;
+    using Objects.Get.Users.Lists;
     using Objects.Post.Users;
-    using Objects.Post.Users.Responses;
     using System.Collections.Generic;
 
-    internal class TraktUserCustomListUpdateRequest : TraktPutByIdRequest<TraktUserCustomListUpdatePostResponse, TraktUserCustomListUpdatePostResponse, TraktUserCustomListUpdatePost>
+    internal class TraktUserCustomListUpdateRequest : TraktPutByIdRequest<TraktList, TraktList, TraktUserCustomListPost>
     {
         internal TraktUserCustomListUpdateRequest(TraktClient client) : base(client) { }
 
@@ -20,10 +20,6 @@
 
         protected override string UriTemplate => "users/{username}/lists/{id}";
 
-        protected override void Validate()
-        {
-            base.Validate();
-            RequestBody.Validate();
-        }
+        protected override TraktRequestObjectType? RequestObjectType => TraktRequestObjectType.Lists;
     }
 }

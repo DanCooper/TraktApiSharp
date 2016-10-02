@@ -3,7 +3,6 @@
     using System;
     using TraktApiSharp;
     using TraktApiSharp.Authentication;
-    using TraktApiSharp.Enums;
     using TraktApiSharp.Services;
 
     class SerializeAuthorization
@@ -15,14 +14,8 @@
         {
             TraktClient client = new TraktClient(CLIENT_ID, CLIENT_SECRET);
 
-            TraktAuthorization fakeAuthorization = new TraktAuthorization
-            {
-                AccessToken = "FakeAccessToken",
-                RefreshToken = "FakeRefreshToken",
-                ExpiresIn = 90 * 24 * 3600,
-                AccessScope = TraktAccessScope.Public,
-                TokenType = TraktAccessTokenType.Bearer
-            };
+            TraktAuthorization fakeAuthorization = TraktAuthorization.CreateWith(DateTime.Now, 90 * 24 * 3600, "FakeAccessToken", "FakeRefreshToken");
+            client.Authorization = fakeAuthorization;
 
             Console.WriteLine("Fake Authorization:");
             Console.WriteLine($"Created (UTC): {fakeAuthorization.Created}");
@@ -33,7 +26,7 @@
             Console.WriteLine($"Access Token: {fakeAuthorization.AccessToken}");
             Console.WriteLine($"Refresh Token: {fakeAuthorization.RefreshToken}");
             Console.WriteLine($"Token Expired: {fakeAuthorization.IsExpired}");
-            Console.WriteLine($"Expires in {fakeAuthorization.ExpiresIn / 3600 / 24} days");
+            Console.WriteLine($"Expires in {fakeAuthorization.ExpiresInSeconds / 3600 / 24} days");
 
             Console.WriteLine("-------------------------------------------------------------");
 
@@ -62,7 +55,7 @@
                     Console.WriteLine($"Access Token: {deserializedFakeAuthorization.AccessToken}");
                     Console.WriteLine($"Refresh Token: {deserializedFakeAuthorization.RefreshToken}");
                     Console.WriteLine($"Token Expired: {deserializedFakeAuthorization.IsExpired}");
-                    Console.WriteLine($"Expires in {deserializedFakeAuthorization.ExpiresIn / 3600 / 24} days");
+                    Console.WriteLine($"Expires in {deserializedFakeAuthorization.ExpiresInSeconds / 3600 / 24} days");
                 }
             }
 

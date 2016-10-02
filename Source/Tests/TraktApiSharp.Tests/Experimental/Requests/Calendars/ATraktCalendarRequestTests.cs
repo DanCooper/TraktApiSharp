@@ -8,6 +8,7 @@
     using System.Reflection;
     using TraktApiSharp.Experimental.Requests.Base.Get;
     using TraktApiSharp.Experimental.Requests.Calendars;
+    using TraktApiSharp.Experimental.Requests.Interfaces;
 
     [TestClass]
     public class ATraktCalendarRequestTests
@@ -29,6 +30,18 @@
         public void TestATraktCalendarRequestIsSubclassOfATraktListGetRequest()
         {
             typeof(ATraktCalendarRequest<int>).IsSubclassOf(typeof(ATraktListGetRequest<int>)).Should().BeTrue();
+        }
+
+        [TestMethod, TestCategory("Requests"), TestCategory("Calendars")]
+        public void TestATraktCalendarRequestImplementsITraktExtendedInfoInterface()
+        {
+            typeof(ATraktCalendarRequest<>).GetInterfaces().Should().Contain(typeof(ITraktExtendedInfo));
+        }
+
+        [TestMethod, TestCategory("Requests"), TestCategory("Calendars")]
+        public void TestATraktCalendarRequestImplementsITraktFilterableInterface()
+        {
+            typeof(ATraktCalendarRequest<>).GetInterfaces().Should().Contain(typeof(ITraktFilterable));
         }
 
         [TestMethod, TestCategory("Requests"), TestCategory("Calendars")]

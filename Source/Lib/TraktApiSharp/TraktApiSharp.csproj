@@ -172,6 +172,8 @@
     <Compile Include="Experimental\Requests\Calendars\TraktCalendarAllNewShowsRequest.cs" />
     <Compile Include="Experimental\Requests\Calendars\TraktCalendarAllSeasonPremieresRequest.cs" />
     <Compile Include="Experimental\Requests\Calendars\TraktCalendarAllShowsRequest.cs" />
+    <Compile Include="Experimental\Requests\Checkins\OAuth\TraktCheckinRequest.cs" />
+    <Compile Include="Experimental\Requests\Checkins\OAuth\TraktCheckinsDeleteRequest.cs" />
     <Compile Include="Experimental\Requests\Genres\ATraktGenresRequest.cs" />
     <Compile Include="Experimental\Requests\Genres\TraktGenresMoviesRequest.cs" />
     <Compile Include="Experimental\Requests\Genres\TraktGenresShowsRequest.cs" />
@@ -179,7 +181,6 @@
     <Compile Include="Experimental\Requests\Interfaces\ITraktRequestAuthorization.cs" />
     <Compile Include="Experimental\Requests\Interfaces\ITraktExtendedInfo.cs" />
     <Compile Include="Experimental\Requests\Interfaces\ITraktFilterable.cs" />
-    <Compile Include="Experimental\Requests\Interfaces\ITraktCheckinRequest.cs" />
     <Compile Include="Experimental\Requests\Interfaces\ITraktPagination.cs" />
     <Compile Include="Experimental\Requests\Interfaces\ITraktListRequest.cs" />
     <Compile Include="Experimental\Requests\Interfaces\ITraktNoContentRequest.cs" />
@@ -195,6 +196,17 @@
     <Compile Include="Experimental\Requests\People\TraktPersonMovieCreditsRequest.cs" />
     <Compile Include="Experimental\Requests\People\TraktPersonShowCreditsRequest.cs" />
     <Compile Include="Experimental\Requests\People\TraktPersonSummaryRequest.cs" />
+    <Compile Include="Experimental\Requests\Recommendations\OAuth\ATraktUserRecommendationsRequest.cs" />
+    <Compile Include="Experimental\Requests\Recommendations\OAuth\TraktUserMovieRecommendationsRequest.cs" />
+    <Compile Include="Experimental\Requests\Recommendations\OAuth\TraktUserRecommendationHideMovieRequest.cs" />
+    <Compile Include="Experimental\Requests\Recommendations\OAuth\TraktUserRecommendationHideShowRequest.cs" />
+    <Compile Include="Experimental\Requests\Recommendations\OAuth\TraktUserShowRecommendationsRequest.cs" />
+    <Compile Include="Experimental\Requests\Scrobbles\OAuth\TraktScrobblePauseRequest.cs" />
+    <Compile Include="Experimental\Requests\Scrobbles\OAuth\TraktScrobbleStartRequest.cs" />
+    <Compile Include="Experimental\Requests\Scrobbles\OAuth\TraktScrobbleStopRequest.cs" />
+    <Compile Include="Experimental\Requests\Search\ATraktSearchRequest.cs" />
+    <Compile Include="Experimental\Requests\Search\TraktSearchIdLookupRequest.cs" />
+    <Compile Include="Experimental\Requests\Search\TraktSearchTextQueryRequest.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Modules\TraktMultipleEpisodesQueryParams.cs" />

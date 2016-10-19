@@ -1,10 +1,43 @@
 Release notes
 =============
+---
+---
+
+Version 0.5.0
+===
+
+#### 0.5.1
+*(2016-10-07)*
+
+Added:
+- new method overload for "CreateWith" in TraktAuthorization
+
+Fixed:
+- wrong OAuth authorization URL, when staging environment is enabled
+- TraktClient.Authorization is not reset after successful call of RevokeAuthorizationAsync()
+
+---------
+
+#### 0.5.0
+*(2016-10-05)*
+
+Added:
+- method "CreateWith" in TraktAuthorization for simpler creation of TraktAuthorization from existing access tokens
+- method "CheckIfAuthorizationIsExpiredOrWasRevokedAsync" in TraktAuthentication for checking, whether authorization was revoked by user
+- method "CheckIfAccessTokenWasRevokedOrIsNotValidAsync" in TraktAuthentication for checking, whether access token was revoked by user
+
+Removed:
+- AccessToken property in TraktClient
+
+Renamed:
+- TraktExtendedOption -> TraktExtendedInfo
+
+Fixed:
+- item id parameter of GetWatchedHistoryAsync in TraktSyncModule
+- item id parameter of GetWatchedHistoryAsync in TraktUsersModule
 
 Version 0.4.0
 ===
----------
----------
 
 #### 0.4.0
 *(2016-09-14)*
@@ -14,8 +47,6 @@ Added:
 
 Version 0.3.0
 ===
----------
----------
 
 #### 0.3.2
 *(2016-09-07)*
@@ -65,8 +96,6 @@ Fixed:
 
 Version 0.2.0
 ===
----------
----------
 
 #### 0.2.0
 *(2016-07-29)*
@@ -134,8 +163,6 @@ Simplified:
 
 Version 0.1.0
 ===
----------
----------
 
 #### 0.1.1
 *(2016-07-09)*
